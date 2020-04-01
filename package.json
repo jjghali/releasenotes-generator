@@ -5,23 +5,21 @@
   "author": "Joshua Ghali <joshua.ghali@desjardins.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "start": "nodemon --exec ts-node -- src/index.ts",
-    "debug": "node --inspect dist/index.js --debug-port=9229 hello-world",
-    "ts-node": "ts-node src/index.ts",
-    "install-cli": "npm run build && cp package.json dist && npm install -g ./dist",
-    "uninstall-cli": "npm uninstall -g ccbranch",
-    "test": "npx -- mocha --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit",
-    "test:junit": "npx -- mocha --reporter mocha-junit-reporter --require ts-node/register 'test/**/*.test.ts' --reporter-options mochaFile=./coverage/test-results.xml --exit",
-    "test:debug": "npx -- mocha inspect --inspect-brk --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit"
+    "build": "npx tsc",
+    "start": "node out/app.js",
+    "prestart": "npm run build"
   },
   "devDependencies": {
+    "@types/request-promise": "^4.1.46",
+    "ts-node": "^8.8.1",
     "tsc": "^1.20150623.0",
     "tslint": "^6.1.0",
     "tslint-config-airbnb": "^5.11.2",
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "graphql-request": "^1.8.2"
+    "graphql-request": "^1.8.2",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
   }
 }
