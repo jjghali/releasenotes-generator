@@ -1,5 +1,6 @@
 import { request, GraphQLClient } from "graphql-request";
 const requestPromise = require("request-promise");
+const fs = require("fs");
 
 const endpoint = "http://localhost:4000/graphql";
 
@@ -19,35 +20,36 @@ const options = {
 
 const query = `
   {
-    repository(
-      project: "parcours-habitation"
-      slug: "calcul-scenario-paiement-web"
-    ) {
-      name
+  repository(
+    project: "parcours-habitation"
+    slug: "calcul-scenario-paiement-web"
+  ) {
+    tag(tag: "1.2.0") {
       projectName
-      description
-      key
-
-      tag(tag: "1.1.0") {
-        jiraTasksBetweenTags(endTag: "1.2.0") {
-          displayId
-          author
-          message
-        }
-        projectName
-        repoSlug
+      repoSlug
+      name
+      latestCommit
+      jiraTasks {
+        key
+        summary
+        reporter
+        assignee
+        status
+      }
+      artifactVersion {
         name
-        latestCommit
-        jiraTasks {
-          key
-          summary
-          reporter
-          assignee
+        path
+        files {
+          name
+          downloadURL
         }
       }
     }
   }
+  }
 `;
+
+// S<inspirer de ca: https://github.com/npm/npm/releases
 
 requestPromise(options)
   .then((authData: any) => {
@@ -61,8 +63,49 @@ requestPromise(options)
 
     graphQLClient
       .request(query)
-      .then(data => {
-        console.log(data);
+      .then((data: any) => {
+        return data.repository.tag;
+      })
+      .then((tag: any) => {
+        let readmeContent: String = "";
+        readmeContent +=
+          tag.projectName + "/" + tag.repoSlug + " " + tag.name + "\n";
+        readmeContent += "\n***Changements:***\n";
+
+        tag.jiraTasks
+          .filter((j: any) => j.status == "done" && j.assignee != "Unassigned")
+          .forEach((jira: any) => {
+            const task: any =
+              "- " +
+              jira.key +
+              ": " +
+              jira.summary +
+              " (" +
+              jira.assignee +
+              ")\n";
+            readmeContent = readmeContent.concat(task);
+          });
+
+        readmeContent += "\n***Téléchargements:***\n";
+        tag.artifactVersion.files
+          .filter(
+            (f: any) =>
+              f.name.includes(".jar") ||
+              f.name.includes(".zip") ||
+              f.name.includes("tar")
+          )
+          .forEach((f: any) => {
+            const download: any = "- " + f.name + ": " + f.downloadURL + "\n";
+            readmeContent = readmeContent.concat(download);
+          });
+        return readmeContent;
+      })
+      .then((readmeContent: any) => {
+        fs.writeFile("RELEASE-NOTES.txt", readmeContent, (err: any) => {
+          if (err) {
+            console.error(err);
+          }
+        });
       })
       .catch((error: any) => {
         console.error(error);

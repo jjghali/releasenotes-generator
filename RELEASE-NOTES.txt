@@ -1,0 +1,15 @@
+parcours-habitation/calcul-scenario-paiement-web 1.2.0
+
+***Changements:***
+- PH-5505: Conserver le montant de paiement (DJD9716)
+- PH-5392: Calcul scénario paiement : Basculer de la page de l'offre vers le calcul de scénario de paiement (DQL2135)
+- PH-5398: Calcul scénario paiement : Scénario, modifier le montant de paiement (DQL2135)
+- PH-5396: Calcul scénario paiement : Scénario - montant de paiement (DQL2135)
+- PH-5483: Reconduire la fréquence originale (DQL2135)
+- PH-5477: Reconduire l'offre (DQL2135)
+- PH-5476: Prêt sans assurance (DQL2135)
+- PH-666: Récupérer infos prêt - Refactorer le client du WS InfoPret, pour le nouveau Ctx d'appel (DJD9716)
+
+***Téléchargements:***
+- calcul-scenario-paiement-web-1.2.0-testsResults.tar: https://artifacts.cfzcea.dev.desjardins.com:443/artifactory/release-local/com/desjardins/parcourshabitation/calcul-scenario-paiement-web/1.2.0/calcul-scenario-paiement-web-1.2.0-testsResults.tar
+- calcul-scenario-paiement-web-1.2.0.zip: https://artifacts.cfzcea.dev.desjardins.com:443/artifactory/release-local/com/desjardins/parcourshabitation/calcul-scenario-paiement-web/1.2.0/calcul-scenario-paiement-web-1.2.0.zip
