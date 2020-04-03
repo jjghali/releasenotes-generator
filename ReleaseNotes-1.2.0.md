@@ -1,6 +1,7 @@
-## parcours-habitation/calcul-scenario-paiement-web 1.2.0
 
-#### Changements
+## parcours-habitation/calcul-scenario-paiement-web - 1.2.0
+
+#### Tickets
 
 * **[PH-5441](https://jira.desjardins.com/browse/PH-5441):** Calcul scénario paiement : Persistance d'une offre simulée  (Calcul scénario paiement : Persistance d'une offre simulée )
 * **[PH-5399](https://jira.desjardins.com/browse/PH-5399):** Calcul scénario paiement : Scénario - amortissement restant (Calcul scénario paiement : Scénario - amortissement restant)

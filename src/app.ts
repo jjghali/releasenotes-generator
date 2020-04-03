@@ -40,8 +40,20 @@ requestPromise(options)
       .then((tag: RepositoryTag) => {
         const generator: Generator = new Generator(tag);
         let resultMd: String = generator.generateMarkdown();
-        fs.writeFile("ReleaseNotes-" + tag.name + ".md", resultMd, (err: any) =>
-          console.log(err)
+        let resultConfluence: String = generator.generateConfluenceFormat();
+        fs.writeFile(
+          "ReleaseNotes-" + tag.name + ".md",
+          resultMd,
+          (err: any) => {
+            if (err) console.log(err);
+          }
+        );
+        fs.writeFile(
+          "ReleaseNotes-" + tag.name + "-adf.txt",
+          resultConfluence,
+          (err: any) => {
+            if (err) console.log(err);
+          }
         );
       });
   })

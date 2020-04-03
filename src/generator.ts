@@ -1,17 +1,19 @@
+const sprintf = require("sprintf-js").sprintf;
+const markdownTemplate = require("./templates/markdown.template");
+import { markdownToAtlassianWikiMarkup } from "@kenchan0130/markdown-to-atlassian-wiki-markup";
 import { RepositoryTag } from "./model/repositoryTag.model";
 import { JiraTask } from "./model/jiraTask.model";
 import { ArtifactVersion } from "./model/artifactVersion.model";
 import { ArtifactFile } from "./model/artifactFile.model";
-const sprintf = require("sprintf-js").sprintf;
-const markdownTemplate = require("./templates/markdown.template");
 
 class Generator {
   private repositoryTag: RepositoryTag;
+  private mdReleaseNotes: string = "";
   constructor(repositoryTag: RepositoryTag) {
     this.repositoryTag = repositoryTag;
   }
 
-  public generateMarkdown(): String {
+  public generateMarkdown(): string {
     const tasksList: string = this.generateMdTaskList(
       this.repositoryTag.jiraTasks
     );
@@ -28,6 +30,8 @@ class Generator {
       tasksList,
       downloadSection
     );
+
+    this.mdReleaseNotes = releaseNote;
     return releaseNote;
   }
 
@@ -58,8 +62,12 @@ class Generator {
     return downloadSection;
   }
 
-  public generateConfluenceFormat(): String {
-    return "";
+  public generateConfluenceFormat(): string {
+    if (this.mdReleaseNotes == "") {
+      this.generateMarkdown();
+    }
+    const confluenceMarkup = markdownToAtlassianWikiMarkup(this.mdReleaseNotes);
+    return confluenceMarkup;
   }
 }
 export { Generator };
