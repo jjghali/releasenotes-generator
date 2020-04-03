@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npx tsc",
-    "start": "node out/app.js",
+    "start": "node dist/app.js",
     "prestart": "npm run build"
   },
   "devDependencies": {
