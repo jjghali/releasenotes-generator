@@ -40,8 +40,8 @@ class APIClient {
   constructor(bearerToken: string, apiURL: string) {
     this.graphQLClient = new GraphQLClient(apiURL, {
       headers: {
-        authorization: bearerToken
-      }
+        authorization: bearerToken,
+      },
     });
   }
 

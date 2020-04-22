@@ -14,13 +14,13 @@ const options = {
   url: "https://mvtdev.login.system.cfzcea.dev.desjardins.com/oauth/token",
   headers: {
     accept: "application/json",
-    "content-type": "application/x-www-form-urlencoded"
+    "content-type": "application/x-www-form-urlencoded",
   },
   form: {
     grant_type: "client_credentials",
     client_id: "b7158766-f12b-4451-a437-3cd69f35d82e",
-    client_secret: "5343ed71-1141-4b98-a1c2-ffd13e3a1967"
-  }
+    client_secret: "5343ed71-1141-4b98-a1c2-ffd13e3a1967",
+  },
 };
 
 // S<inspirer de ca: https://github.com/npm/npm/releases
@@ -34,8 +34,8 @@ requestPromise(options)
     apiClient
       .getRepositoryTag(
         "parcours-habitation",
-        "calcul-scenario-paiement-web",
-        "1.2.0"
+        "renouvellement-service",
+        "1.6.0"
       )
       .then((tag: RepositoryTag) => {
         const generator: Generator = new Generator(tag);
