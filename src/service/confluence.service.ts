@@ -34,7 +34,7 @@ class ConfluenceService {
         console.error(error);
       });
   }
-  public getPageBaseInfo(title: string, spaceKey: string, content: string) {
+  public getPage(title: string, spaceKey: string): Promise<any> {
     let options = {
       method: "GET",
       url: this.confluenceLink + "/rest/api/content",
@@ -47,33 +47,56 @@ class ConfluenceService {
       jar: "JAR",
     };
 
-    requestPromise(options)
+    return requestPromise(options)
       .then((result: any) => {
-        let pageId = result.results[0].id;
-        let version = result.results[0].version.number;
-        this.updatePage(pageId, version);
+        return result.results[0];
       })
       .catch((error: any) => {
         console.error(error);
       });
   }
 
-  public updatePage(pageid: string, content: string) {
-    let options = {
-      method: "PUT",
-      url: this.confluenceLink + "/rest/api/content/" + pageid,
-      headers: {
-        "content-type": "application/json",
-        authorization: "Basic " + this.authorization,
-      },
-      body: content,
-      jar: "JAR",
-    };
-    requestPromise(options)
-      .then((result: any) => {
-        console.log(
-          "Page updated at: " + this.confluenceLink + result._links.webui
-        );
+  public updatePage(title: string, spaceKey: string, content: string) {
+    this.getPage(title, spaceKey)
+      .then((res: any) => {
+        let pageId = res.id;
+        let version = res.version.number + 1;
+
+        let options = {
+          method: "PUT",
+          url: this.confluenceLink + "/rest/api/content/" + pageId,
+          headers: {
+            "content-type": "application/json",
+            authorization: "Basic " + this.authorization,
+          },
+          body: {
+            id: pageId,
+            type: "page",
+            title,
+            space: { key: spaceKey },
+            body: {
+              storage: {
+                value: content,
+                representation: "wiki",
+              },
+            },
+            version: {
+              number: version,
+            },
+          },
+          json: true,
+          jar: "JAR",
+        };
+
+        requestPromise(options)
+          .then((result: any) => {
+            console.log(
+              "Page updated at: " + this.confluenceLink + result._links.webui
+            );
+          })
+          .catch((error: any) => {
+            console.error(error);
+          });
       })
       .catch((error: any) => {
         console.error(error);
