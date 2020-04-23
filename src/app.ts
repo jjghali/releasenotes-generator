@@ -4,6 +4,14 @@ import { JiraTask } from "./model/jiraTask.model";
 import { ArtifactFile } from "./model/artifactFile.model";
 import { APIClient } from "./api.client";
 import { Generator } from "./generator";
+import { ConfluenceService } from "./service/confluence.service";
+
+const confluenceService = new ConfluenceService(
+  "https://confluence.desjardins.com/",
+  "username",
+  "password"
+);
+
 const requestPromise = require("request-promise");
 const fs = require("fs");
 
@@ -18,8 +26,8 @@ const options = {
   },
   form: {
     grant_type: "client_credentials",
-    client_id: "b7158766-f12b-4451-a437-3cd69f35d82e",
-    client_secret: "5343ed71-1141-4b98-a1c2-ffd13e3a1967",
+    client_id: "clientid",
+    client_secret: "secret",
   },
 };
 
@@ -39,8 +47,8 @@ requestPromise(options)
       )
       .then((tag: RepositoryTag) => {
         const generator: Generator = new Generator(tag);
-        let resultMd: String = generator.generateMarkdown();
-        let resultConfluence: String = generator.generateConfluenceFormat();
+        let resultMd: string = generator.generateMarkdown();
+        let resultConfluence: string = generator.generateConfluenceFormat();
         fs.writeFile(
           "ReleaseNotes-" + tag.name + ".md",
           resultMd,
@@ -48,12 +56,19 @@ requestPromise(options)
             if (err) console.log(err);
           }
         );
-        fs.writeFile(
-          "ReleaseNotes-" + tag.name + "-adf.txt",
-          resultConfluence,
-          (err: any) => {
-            if (err) console.log(err);
-          }
+        // fs.writeFile(
+        //   "ReleaseNotes-" + tag.name + "-adf.txt",
+        //   resultConfluence,
+        //   (err: any) => {
+        //     if (err) console.log(err);
+        //   }
+        // );
+
+        console.log("Pushing to Confluence 📄");
+        confluenceService.createPage(
+          "ReleaseNotes-" + tag.name,
+          "spacekey",
+          resultConfluence
         );
       });
   })
