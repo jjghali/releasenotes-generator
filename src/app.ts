@@ -6,28 +6,34 @@ import { APIClient } from "./api.client";
 import { Generator } from "./generator";
 import { ConfluenceService } from "./service/confluence.service";
 
+const graphqlEndpointUrl: string = process.env.GRAPHQL_URL || "";
+const confluenceUrl: string = process.env.CONFLUENCE_URL || "";
+const confluenceUser: string = process.env.CONFLUENCE_USER || "";
+const confluencePassword: string = process.env.CONFLUENCE_PASSWORD || "";
+const productTokenUrl: string = process.env.PRODUCT_TOKEN_URL || "";
+const productCLientId: string = process.env.PRODUCT_CLIENT_ID || "";
+const productClientSecret: string = process.env.PRODUCT_CLIENT_SECRET || "";
+
 const confluenceService = new ConfluenceService(
-  "https://confluence.desjardins.com/",
-  "username",
-  "password"
+  confluenceUrl,
+  confluenceUser,
+  confluencePassword
 );
 
 const requestPromise = require("request-promise");
 const fs = require("fs");
 
-const endpoint = "http://localhost:4000/graphql";
-
 const options = {
   method: "POST",
-  url: "https://mvtdev.login.system.cfzcea.dev.desjardins.com/oauth/token",
+  url: productTokenUrl,
   headers: {
     accept: "application/json",
     "content-type": "application/x-www-form-urlencoded",
   },
   form: {
     grant_type: "client_credentials",
-    client_id: "clientid",
-    client_secret: "secret",
+    client_id: productCLientId,
+    client_secret: productClientSecret,
   },
 };
 
@@ -37,7 +43,7 @@ requestPromise(options)
   .then((authData: any) => {
     const parsedAuthData: any = JSON.parse(authData);
     const token = "Bearer " + parsedAuthData.access_token;
-    const apiClient: APIClient = new APIClient(token, endpoint);
+    const apiClient: APIClient = new APIClient(token, graphqlEndpointUrl);
 
     apiClient
       .getRepositoryTag(
