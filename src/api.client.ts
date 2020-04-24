@@ -31,7 +31,8 @@ const queryTemplate: String = `
       }
     }
   }
-  }
+}
+  
 `;
 
 class APIClient {

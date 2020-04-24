@@ -1,4 +1,5 @@
 import { request, GraphQLClient } from "graphql-request";
+import { loadEnv, env } from "./env";
 import { RepositoryTag } from "./model/repositoryTag.model";
 import { JiraTask } from "./model/jiraTask.model";
 import { ArtifactFile } from "./model/artifactFile.model";
@@ -6,18 +7,19 @@ import { APIClient } from "./api.client";
 import { Generator } from "./generator";
 import { ConfluenceService } from "./service/confluence.service";
 
-const graphqlEndpointUrl: string = process.env.GRAPHQL_URL || "";
-const confluenceUrl: string = process.env.CONFLUENCE_URL || "";
-const confluenceUser: string = process.env.CONFLUENCE_USER || "";
-const confluencePassword: string = process.env.CONFLUENCE_PASSWORD || "";
-const productTokenUrl: string = process.env.PRODUCT_TOKEN_URL || "";
-const productCLientId: string = process.env.PRODUCT_CLIENT_ID || "";
-const productClientSecret: string = process.env.PRODUCT_CLIENT_SECRET || "";
+// const graphqlEndpointUrl: string = process.env.GRAPHQL_URL || "";
+// const confluenceUrl: string = process.env.CONFLUENCE_URL || "";
+// const confluenceUser: string = process.env.CONFLUENCE_USER || "";
+// const confluencePassword: string = process.env.CONFLUENCE_PASSWORD || "";
+// const productTokenUrl: string = process.env.PRODUCT_TOKEN_URL || "";
+// const productCLientId: string = process.env.PRODUCT_CLIENT_ID || "";
+// const productClientSecret: string = process.env.PRODUCT_CLIENT_SECRET || "";
+loadEnv();
 
 const confluenceService = new ConfluenceService(
-  confluenceUrl,
-  confluenceUser,
-  confluencePassword
+  env.CONFLUENCE_URL,
+  env.CONFLUENCE_USER,
+  env.CONFLUENCE_PASSWORD
 );
 
 const requestPromise = require("request-promise");
@@ -25,15 +27,15 @@ const fs = require("fs");
 
 const options = {
   method: "POST",
-  url: productTokenUrl,
+  url: env.PRODUCT_TOKEN_URL,
   headers: {
     accept: "application/json",
     "content-type": "application/x-www-form-urlencoded",
   },
   form: {
     grant_type: "client_credentials",
-    client_id: productCLientId,
-    client_secret: productClientSecret,
+    client_id: env.PRODUCT_CLIENT_ID,
+    client_secret: env.PRODUCT_CLIENT_SECRET,
   },
 };
 
@@ -43,7 +45,7 @@ requestPromise(options)
   .then((authData: any) => {
     const parsedAuthData: any = JSON.parse(authData);
     const token = "Bearer " + parsedAuthData.access_token;
-    const apiClient: APIClient = new APIClient(token, graphqlEndpointUrl);
+    const apiClient: APIClient = new APIClient(token, env.GRAPHQL_URL);
 
     apiClient
       .getRepositoryTag(
@@ -72,8 +74,8 @@ requestPromise(options)
 
         console.log("Pushing to Confluence 📄");
         confluenceService.createPage(
-          "ReleaseNotes-" + tag.name,
-          "spacekey",
+          "ReleaseNotes-" + tag.name + "-test2",
+          "~DWP1473",
           resultConfluence
         );
       });

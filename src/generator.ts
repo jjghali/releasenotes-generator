@@ -109,7 +109,7 @@ class Generator {
     let downloadSection: string = "";
 
     artifactVersion.files.forEach((f: ArtifactFile) => {
-      downloadSection += `* [` + f.name + `\\` + f.downloadURL + `]\n`;
+      downloadSection += `* [` + f.downloadURL + `]\n`;
     });
     return downloadSection;
   }

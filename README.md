@@ -7,6 +7,7 @@ https://developer.atlassian.com/server/confluence/confluence-rest-api-examples/
 https://www.npmjs.com/package/easy-md-to-html
 https://www.npmjs.com/package/@kenchan0130/markdown-to-atlassian-wiki-markup
 https://confluence.atlassian.com/doc/expand-macro-223222352.html
+https://developer.atlassian.com/server/confluence/confluence-rest-api-examples/#converting-content
 
 ### get page confluence
 

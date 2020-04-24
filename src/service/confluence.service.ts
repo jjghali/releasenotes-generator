@@ -12,28 +12,42 @@ class ConfluenceService {
   }
 
   public createPage(title: string, spaceKey: string, content: string) {
-    let options: any = {
-      method: "POST",
-      url: this.confluenceLink + "/rest/api/content",
-      headers: {
-        "content-type": "application/json",
-        authorization: "Basic " + this.authorization,
-      },
-      body: {
-        storage: { value: content, representation: "wiki" },
-      },
-    };
+    this.convertToStorageFormat(content).then(async (res: any) => {
+      let options: any = {
+        url: this.confluenceLink + "/rest/api/content",
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: "Basic " + this.authorization,
+        },
+        body: {
+          type: "page",
+          title: title,
+          space: {
+            key: spaceKey,
+          },
+          body: {
+            storage: {
+              value: res.value,
+              representation: res.representation,
+            },
+          },
+        },
+        json: true,
+      };
 
-    requestPromise(options)
-      .then((result: any) => {
-        console.log(
-          "New page created at: " + this.confluenceLink + result._links.webui
-        );
-      })
-      .catch((error: any) => {
-        console.error(error);
-      });
+      await requestPromise(options)
+        .then((result: any) => {
+          console.log(
+            "New page created at: " + this.confluenceLink + result._links.webui
+          );
+        })
+        .catch((error: any) => {
+          console.error(error);
+        });
+    });
   }
+
   public getPage(title: string, spaceKey: string): Promise<any> {
     let options = {
       method: "GET",
@@ -101,6 +115,26 @@ class ConfluenceService {
       .catch((error: any) => {
         console.error(error);
       });
+  }
+
+  private convertToStorageFormat(content: any): Promise<any> {
+    let options = {
+      method: "POST",
+      url: this.confluenceLink + "/rest/api/contentbody/convert/storage",
+      headers: {
+        "content-type": "application/json",
+        authorization: "Basic " + this.authorization,
+      },
+      body: {
+        value: content,
+        representation: "wiki",
+      },
+      json: true,
+      jar: "JAR",
+    };
+    return requestPromise(options).then((res: any) => {
+      return res;
+    });
   }
 }
 
