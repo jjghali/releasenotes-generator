@@ -1,85 +1,73 @@
-import { request, GraphQLClient } from "graphql-request";
+import * as commander from "commander";
 import { loadEnv, env } from "./env";
-import { RepositoryTag } from "./model/repositoryTag.model";
-import { JiraTask } from "./model/jiraTask.model";
-import { ArtifactFile } from "./model/artifactFile.model";
-import { APIClient } from "./api.client";
-import { Generator } from "./generator";
-import { ConfluenceService } from "./service/confluence.service";
+import { Controller } from "./controller";
+import { Options } from "./options";
 
-// const graphqlEndpointUrl: string = process.env.GRAPHQL_URL || "";
-// const confluenceUrl: string = process.env.CONFLUENCE_URL || "";
-// const confluenceUser: string = process.env.CONFLUENCE_USER || "";
-// const confluencePassword: string = process.env.CONFLUENCE_PASSWORD || "";
-// const productTokenUrl: string = process.env.PRODUCT_TOKEN_URL || "";
-// const productCLientId: string = process.env.PRODUCT_CLIENT_ID || "";
-// const productClientSecret: string = process.env.PRODUCT_CLIENT_SECRET || "";
 loadEnv();
 
-const confluenceService = new ConfluenceService(
-  env.CONFLUENCE_URL,
-  env.CONFLUENCE_USER,
-  env.CONFLUENCE_PASSWORD
-);
+const chalk = require("chalk");
+const confluenceUrl: string = env.CONFLUENCE_URL || "";
+const confluenceUser: string = env.CONFLUENCE_USER || "";
+const confluencePassword: string = env.CONFLUENCE_PASSWORD || "";
 
-const requestPromise = require("request-promise");
-const fs = require("fs");
+const graphqlEndpointUrl: string = env.GRAPHQL_URL || "";
+const productTokenUrl: string = env.PRODUCT_TOKEN_URL || "";
+const productCLientId: string = env.PRODUCT_CLIENT_ID || "";
+const productClientSecret: string = env.PRODUCT_CLIENT_SECRET || "";
 
-const options = {
-  method: "POST",
-  url: env.PRODUCT_TOKEN_URL,
-  headers: {
-    accept: "application/json",
-    "content-type": "application/x-www-form-urlencoded",
-  },
-  form: {
-    grant_type: "client_credentials",
-    client_id: env.PRODUCT_CLIENT_ID,
-    client_secret: env.PRODUCT_CLIENT_SECRET,
-  },
-};
+const program = new commander.Command();
+const printTool = require("print-tools-js");
 
-// S<inspirer de ca: https://github.com/npm/npm/releases
+program
+  .storeOptionsAsProperties(false) // <--- change behaviour
+  .passCommandToAction(false); // <--- change behaviour
 
-requestPromise(options)
-  .then((authData: any) => {
-    const parsedAuthData: any = JSON.parse(authData);
-    const token = "Bearer " + parsedAuthData.access_token;
-    const apiClient: APIClient = new APIClient(token, env.GRAPHQL_URL);
+program
+  .version("1.0.0")
+  .description("Release notes generator")
+  .requiredOption("-t, --tag <tag>", "")
+  .requiredOption("-s, --space-key <space-key>", "")
+  .option("--graphql-url <graphql-url>", "")
+  .option("--confluence-url <confluence-url>", "")
+  .option("--confluence-username <confluence-username>", "")
+  .option("--confluence-password <confluence-password>", "")
+  .option("--product-token-url <product-token-url>", "")
+  .option("--product-client-id <product-client-id>", "")
+  .option("--product-client-secret <product-client-secret>", "")
+  .action((opts: Options) => {
+    new Promise((resolve, reject) => {
+      let envConfig: any;
+      if (
+        !opts.graphqlUrl ||
+        !opts.confluencePassword ||
+        !opts.confluenceUrl ||
+        !opts.confluenceUser ||
+        !opts.productClientId ||
+        !opts.productClientSecret ||
+        !opts.productTokenUrl
+      ) {
+        if (env) {
+          printTool.warning(
+            "[Warn] One or more required options are missing. We will use the ones existing in the dotenv file."
+          );
+          envConfig = {
+            tag: opts.tag,
+            spacekey: opts.spacekey,
+            graphqlUrl: env.GRAPHQL_URL,
+            confluenceUrl: env.CONFLUENCE_URL,
+            confluenceUser: env.CONFLUENCE_USER,
+            confluencePassword: env.CONFLUENCE_PASSWORD,
+            productTokenUrl: env.PRODUCT_TOKEN_URL,
+            productClientId: env.PRODUCT_CLIENT_ID,
+            productClientSecret: env.PRODUCT_CLIENT_SECRET,
+          };
+        } else reject("no-config");
+      } else envConfig = null;
 
-    apiClient
-      .getRepositoryTag(
-        "parcours-habitation",
-        "renouvellement-service",
-        "1.6.0"
-      )
-      .then((tag: RepositoryTag) => {
-        const generator: Generator = new Generator(tag);
-        let resultMd: string = generator.generateMarkdown();
-        let resultConfluence: string = generator.generateConfluenceFormat();
-        fs.writeFile(
-          "ReleaseNotes-" + tag.name + ".md",
-          resultMd,
-          (err: any) => {
-            if (err) console.log(err);
-          }
-        );
-        // fs.writeFile(
-        //   "ReleaseNotes-" + tag.name + "-adf.txt",
-        //   resultConfluence,
-        //   (err: any) => {
-        //     if (err) console.log(err);
-        //   }
-        // );
-
-        console.log("Pushing to Confluence 📄");
-        confluenceService.createPage(
-          "ReleaseNotes-" + tag.name + "-test2",
-          "~DWP1473",
-          resultConfluence
-        );
-      });
-  })
-  .catch((error: any) => {
-    console.error(error);
+      const controller: Controller = new Controller(envConfig || opts);
+      controller.generateReleaseNote(opts.tag);
+    }).catch((error: any) => {
+      if (error == "no-config")
+        printTool.error("[Error] No configurations were provided");
+    });
   });
