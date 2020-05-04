@@ -8,7 +8,6 @@ import { Generator } from "./generator";
 import { ConfluenceService } from "./service/confluence.service";
 import { Options } from "./options";
 const requestPromise = require("request-promise");
-const fs = require("fs");
 
 export class Controller {
   private env: Options;
@@ -16,6 +15,10 @@ export class Controller {
 
   constructor(env: Options) {
     this.env = env;
+    this.env.tag = env.tag.trim();
+    this.env.repository = env.repository.trim();
+    this.env.project = env.project.trim();
+    this.env.spaceKey = env.spaceKey.trim();
     this.confluenceService = new ConfluenceService(
       this.env.confluenceUrl,
       this.env.confluenceUser,
@@ -23,7 +26,7 @@ export class Controller {
     );
   }
 
-  public generateReleaseNote(tag: string) {
+  public generateReleaseNote() {
     const options = {
       method: "POST",
       url: this.env.productTokenUrl,
@@ -46,34 +49,15 @@ export class Controller {
         const apiClient: APIClient = new APIClient(token, this.env.graphqlUrl);
 
         apiClient
-          .getRepositoryTag(
-            "parcours-habitation",
-            "renouvellement-service",
-            "1.6.0"
-          )
+          .getRepositoryTag(this.env.project, this.env.repository, this.env.tag)
           .then((tag: RepositoryTag) => {
             const generator: Generator = new Generator(tag);
-            let resultMd: string = generator.generateMarkdown();
             let resultConfluence: string = generator.generateConfluenceFormat();
-            fs.writeFile(
-              "ReleaseNotes-" + tag.name + ".md",
-              resultMd,
-              (err: any) => {
-                if (err) console.log(err);
-              }
-            );
-            // fs.writeFile(
-            //   "ReleaseNotes-" + tag.name + "-adf.txt",
-            //   resultConfluence,
-            //   (err: any) => {
-            //     if (err) console.log(err);
-            //   }
-            // );
 
             console.log("Pushing to Confluence 📄");
             this.confluenceService.createPage(
-              "ReleaseNotes-" + tag.name + "-test2",
-              "~DWP1473",
+              "Release note-" + tag.name,
+              this.env.spaceKey,
               resultConfluence
             );
           });

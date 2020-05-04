@@ -1,6 +1,8 @@
 export class Options {
   tag: string = "";
-  spacekey: string = "";
+  repository: string = "";
+  project: string = "";
+  spaceKey: string = "";
   graphqlUrl: string = "";
   confluenceUrl: string = "";
   confluenceUser: string = "";

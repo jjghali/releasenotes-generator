@@ -1,13 +1,19 @@
 {
   "name": "releasenotes-generator",
   "version": "1.0.0",
-  "main": "index.ts",
   "author": "Joshua Ghali <joshua.ghali@desjardins.com>",
-  "license": "MIT",
+  "license": "None",
+  "main": "dist/app.js",
+  "types": "dist/app.d.ts",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/app.js",
-    "prestart": "npm run build"
+    "prestart": "npm run build",
+    "install-cli": "npm run build && cp package.json dist && npm install -g ./dist",
+    "uninstall-cli": "npm uninstall -g releasenotes-gen",
+    "test": "npx -- mocha --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit",
+    "test:junit": "npx -- mocha --reporter mocha-junit-reporter --require ts-node/register 'test/**/*.test.ts' --reporter-options mochaFile=./coverage/test-results.xml --exit",
+    "test:debug": "npx -- mocha --inspect-brk --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit"
   },
   "devDependencies": {
     "@types/request-promise": "^4.1.46",
@@ -27,5 +33,8 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "ts-dotenv": "^0.8.1"
+  },
+  "bin": {
+    "releasenotes-gen": "dist/app.js"
   }
 }

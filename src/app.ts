@@ -25,8 +25,11 @@ program
 program
   .version("1.0.0")
   .description("Release notes generator")
+  .command("gen")
   .requiredOption("-t, --tag <tag>", "")
   .requiredOption("-s, --space-key <space-key>", "")
+  .requiredOption("-p, --project <project>", "")
+  .requiredOption("-r, --repository <repository>", "")
   .option("--graphql-url <graphql-url>", "")
   .option("--confluence-url <confluence-url>", "")
   .option("--confluence-username <confluence-username>", "")
@@ -35,6 +38,7 @@ program
   .option("--product-client-id <product-client-id>", "")
   .option("--product-client-secret <product-client-secret>", "")
   .action((opts: Options) => {
+    printTool.info("[Info] Starting...");
     new Promise((resolve, reject) => {
       let envConfig: any;
       if (
@@ -52,7 +56,9 @@ program
           );
           envConfig = {
             tag: opts.tag,
-            spacekey: opts.spacekey,
+            repository: opts.repository,
+            project: opts.project,
+            spaceKey: opts.spaceKey,
             graphqlUrl: env.GRAPHQL_URL,
             confluenceUrl: env.CONFLUENCE_URL,
             confluenceUser: env.CONFLUENCE_USER,
@@ -65,9 +71,10 @@ program
       } else envConfig = null;
 
       const controller: Controller = new Controller(envConfig || opts);
-      controller.generateReleaseNote(opts.tag);
+      controller.generateReleaseNote();
     }).catch((error: any) => {
       if (error == "no-config")
         printTool.error("[Error] No configurations were provided");
     });
   });
+program.parse(process.argv);
