@@ -1,8 +1,24 @@
 const requestPromise = require("request-promise");
+const Logger = require("@ptkdev/logger");
+const loggerOptions = {
+  "language": "en",
+  "colors": true,
+  "debug": true,
+  "info": true,
+  "warning": true,
+  "error": true,
+  "sponsor": true,
+  "write": false
+};
+
+const logger = new Logger(loggerOptions);
+
 class ConfluenceService {
   private confluenceLink: string = "";
   private authorization: string = "";
   //   endpoint must be https://confluence.desjardins.com/
+
+
 
   constructor(confluenceLink: string, username: string, password: string) {
     this.authorization = Buffer.from(`${username}:${password}`).toString(
@@ -13,6 +29,7 @@ class ConfluenceService {
 
   public createPage(title: string, spaceKey: string, parentPage: string, content: string) {
     this.convertToStorageFormat(content).then(async (res: any) => {
+      let ancestors = parentPage ? [{ parentPage }] : [];
       let options: any = {
         url: this.confluenceLink + "/rest/api/content",
         method: "POST",
@@ -26,7 +43,7 @@ class ConfluenceService {
           space: {
             key: spaceKey,
           },
-          ancestors: [{ parentPage }],
+          ancestors,
           body: {
             storage: {
               value: res.value,
@@ -39,12 +56,12 @@ class ConfluenceService {
 
       await requestPromise(options)
         .then((result: any) => {
-          console.log(
+          logger.info(
             "New page created at: " + this.confluenceLink + result._links.webui
           );
         })
         .catch((error: any) => {
-          console.error(error);
+          logger.error(error.message);
         });
     });
   }
@@ -67,7 +84,7 @@ class ConfluenceService {
         return result.results[0];
       })
       .catch((error: any) => {
-        console.error(error);
+        logger.error(error.message);
       });
   }
 
@@ -105,16 +122,16 @@ class ConfluenceService {
 
         requestPromise(options)
           .then((result: any) => {
-            console.log(
+            logger.info(
               "Page updated at: " + this.confluenceLink + result._links.webui
             );
           })
           .catch((error: any) => {
-            console.error(error);
+            logger.error(error.message);
           });
       })
       .catch((error: any) => {
-        console.error(error);
+        logger.error(error.message);
       });
   }
 

@@ -16,7 +16,19 @@ const productCLientId: string = env.PRODUCT_CLIENT_ID || "";
 const productClientSecret: string = env.PRODUCT_CLIENT_SECRET || "";
 
 const program = new commander.Command();
-const printTool = require("print-tools-js");
+const Logger = require("@ptkdev/logger");
+const loggerOptions = {
+  "language": "en",
+  "colors": true,
+  "debug": true,
+  "info": true,
+  "warning": true,
+  "error": true,
+  "sponsor": true,
+  "write": false
+};
+
+const logger = new Logger(loggerOptions);
 
 program
   .storeOptionsAsProperties(false) // <--- change behaviour
@@ -39,7 +51,7 @@ program
   .option("--product-client-id <product-client-id>", "")
   .option("--product-client-secret <product-client-secret>", "")
   .action((opts: Options) => {
-    printTool.info("[Info] Starting...");
+    logger.info("Starting...");
     new Promise((resolve, reject) => {
       let envConfig: any;
       if (
@@ -52,8 +64,8 @@ program
         !opts.productTokenUrl
       ) {
         if (env) {
-          printTool.warning(
-            "[Warn] One or more required options are missing. We will use the ones existing in the dotenv file."
+          logger.warning(
+            "One or more required options are missing. We will use the ones existing in the dotenv file."
           );
           envConfig = {
             tag: opts.tag,
@@ -71,17 +83,17 @@ program
         } else reject("no-config");
       } else envConfig = null;
 
-      if (opts.parentPage.length == 0) {
-        printTool.warning(
-          "[Warn] No parent page was specified. Page will be created at the root of the space."
+      if (!opts.parentPage) {
+        logger.warning(
+          "No parent page was specified. Page will be created at the root of the space."
         );
       }
 
       const controller: Controller = new Controller(envConfig || opts);
       controller.generateReleaseNote();
     }).catch((error: any) => {
-      if (error == "no-config")
-        printTool.error("[Error] No configurations were provided");
-    });
+      logger.error(error.message)
+    }
+    );
   });
 program.parse(process.argv);

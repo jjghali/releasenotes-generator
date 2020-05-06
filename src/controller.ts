@@ -19,7 +19,8 @@ export class Controller {
     this.env.repository = env.repository.trim();
     this.env.project = env.project.trim();
     this.env.spaceKey = env.spaceKey.trim();
-    this.env.parentPage = env.parentPage.trim();
+    if (this.env.parentPage)
+      this.env.parentPage = env.parentPage.trim();
     this.confluenceService = new ConfluenceService(
       this.env.confluenceUrl,
       this.env.confluenceUser,
