@@ -30,6 +30,7 @@ program
   .requiredOption("-s, --space-key <space-key>", "")
   .requiredOption("-p, --project <project>", "")
   .requiredOption("-r, --repository <repository>", "")
+  .option("-P, --parent-page <parent-Page>", "")
   .option("--graphql-url <graphql-url>", "")
   .option("--confluence-url <confluence-url>", "")
   .option("--confluence-username <confluence-username>", "")
@@ -69,6 +70,12 @@ program
           };
         } else reject("no-config");
       } else envConfig = null;
+
+      if (opts.parentPage.length == 0) {
+        printTool.warning(
+          "[Warn] No parent page was specified. Page will be created at the root of the space."
+        );
+      }
 
       const controller: Controller = new Controller(envConfig || opts);
       controller.generateReleaseNote();

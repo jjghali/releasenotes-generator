@@ -1,6 +1,6 @@
 class ArtifactFile {
   public name: String = "";
-  public downloadURL: String = "";
+  public href: String = "";
   public created: String = "";
   public createdBy: String = "";
   public lastModified: String = "";

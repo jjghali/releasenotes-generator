@@ -58,7 +58,7 @@ class Generator {
     let downloadSection: string = "";
 
     artifactVersion.files.forEach((f: ArtifactFile) => {
-      downloadSection += `* [` + f.name + `](` + f.downloadURL + `)\n`;
+      downloadSection += `* [` + f.name + `](` + f.href + `)\n`;
     });
     return downloadSection;
   }
@@ -78,6 +78,7 @@ class Generator {
 
     let releaseNote: string = sprintf(
       confluenceTemplate.releaseNoteTemplate,
+      this.repositoryTag.artifactVersion.created,
       tasksList,
       testCasesSection,
       downloadSection
@@ -88,18 +89,13 @@ class Generator {
   private generateConfluenceTaskList(jiraTasks: JiraTask[]): string {
     let taskList: string = "";
 
-    jiraTasks.forEach((j: JiraTask) => {
-      taskList +=
-        "**[" +
-        j.key +
-        "|https://jira.desjardins.com/browse/" +
-        j.key +
-        "]:* " +
-        j.summary +
-        " (" +
-        j.summary +
-        ")\n";
-    });
+    for (let i = 0; i < jiraTasks.length; i++) {
+      const j = jiraTasks[i];
+      taskList += j.key
+      if ((i + 1) != jiraTasks.length)
+        taskList += ","
+    }
+
     return taskList;
   }
 
@@ -109,7 +105,7 @@ class Generator {
     let downloadSection: string = "";
 
     artifactVersion.files.forEach((f: ArtifactFile) => {
-      downloadSection += `* [` + f.downloadURL + `]\n`;
+      downloadSection += `* [` + f.href + `]\n`;
     });
     return downloadSection;
   }

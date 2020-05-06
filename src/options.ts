@@ -4,6 +4,7 @@ export class Options {
   project: string = "";
   spaceKey: string = "";
   graphqlUrl: string = "";
+  parentPage: string = "";
   confluenceUrl: string = "";
   confluenceUser: string = "";
   confluencePassword: string = "";

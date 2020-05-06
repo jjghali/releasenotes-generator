@@ -24,9 +24,10 @@ const queryTemplate: String = `
       artifactVersion {
         name
         path
+        created
         files {
           name
-          downloadURL
+          href
         }
       }
     }

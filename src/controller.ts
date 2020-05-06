@@ -19,6 +19,7 @@ export class Controller {
     this.env.repository = env.repository.trim();
     this.env.project = env.project.trim();
     this.env.spaceKey = env.spaceKey.trim();
+    this.env.parentPage = env.parentPage.trim();
     this.confluenceService = new ConfluenceService(
       this.env.confluenceUrl,
       this.env.confluenceUser,
@@ -56,8 +57,9 @@ export class Controller {
 
             console.log("Pushing to Confluence 📄");
             this.confluenceService.createPage(
-              "Release note-" + tag.name,
+              "Release note-" + tag.name + "test",
               this.env.spaceKey,
+              this.env.parentPage,
               resultConfluence
             );
           });

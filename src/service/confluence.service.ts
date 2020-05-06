@@ -11,7 +11,7 @@ class ConfluenceService {
     this.confluenceLink = confluenceLink;
   }
 
-  public createPage(title: string, spaceKey: string, content: string) {
+  public createPage(title: string, spaceKey: string, parentPage: string, content: string) {
     this.convertToStorageFormat(content).then(async (res: any) => {
       let options: any = {
         url: this.confluenceLink + "/rest/api/content",
@@ -26,6 +26,7 @@ class ConfluenceService {
           space: {
             key: spaceKey,
           },
+          ancestors: [{ parentPage }],
           body: {
             storage: {
               value: res.value,
