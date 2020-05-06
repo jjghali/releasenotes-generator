@@ -58,7 +58,7 @@ export class Controller {
 
             console.log("Pushing to Confluence 📄");
             this.confluenceService.createPage(
-              "Release note-" + tag.name + "test",
+              "Release note-" + tag.name,
               this.env.spaceKey,
               this.env.parentPage,
               resultConfluence
