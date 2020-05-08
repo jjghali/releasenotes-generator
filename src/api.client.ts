@@ -10,6 +10,7 @@ const getReleaseInfoQuery: String = `
       project: "%1$s"
     slug: "%2$s"
   ) {
+    key
     tag(tag: "%3$s") {
       projectName
       repoSlug

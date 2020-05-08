@@ -1,13 +1,16 @@
 const sprintf = require("sprintf-js").sprintf;
 const markdownTemplate = require("./templates/markdown.template");
 const confluenceTemplate = require("./templates/confluence.template");
-import { markdownToAtlassianWikiMarkup } from "@kenchan0130/markdown-to-atlassian-wiki-markup";
+const measuresConverter = require("./util/measureConverter");
+
 import { RepositoryTag } from "./model/repositoryTag.model";
 import { JiraTask } from "./model/jiraTask.model";
 import { ArtifactVersion } from "./model/artifactVersion.model";
 import { ArtifactFile } from "./model/artifactFile.model";
 import { Repository } from "./model/repository.model";
 import { Measures } from "./model/measures.model";
+
+
 
 class Generator {
   // private repositoryTag: RepositoryTag;
@@ -108,44 +111,55 @@ class Generator {
 
   private generateSonarQubeResultsSection(): string {
     this.repository.measures = new Measures();
-    this.repository.measures.coverage = 95.2
-    this.repository.measures.reliability_rating = "Z"
-    this.repository.measures.security_rating = "Z"
-    this.repository.measures.sqale_rating = "Z"
-    this.repository.measures.ncloc = 9000
+    this.repository.measures.coverage = 92.6
+    this.repository.measures.reliability_rating = "1.0"
+    this.repository.measures.security_rating = "5.0"
+    this.repository.measures.sqale_rating = "1.0"
+    this.repository.measures.ncloc = 1807
 
-    let sonarSection: string = ""
+    const sonarqubeLink: string = "https://sonar.cfzcea.dev.desjardins.com/dashboard?id=" + this.repository.key;
+
+    const colorCoverage: string = measuresConverter.colorForCoverage(this.repository.measures.coverage);
+    const colorSqale: string = measuresConverter.colorForNumber(this.repository.measures.sqale_rating);
+    const colorReliability: string = measuresConverter.colorForNumber(this.repository.measures.reliability_rating);
+    const colorSecurity: string = measuresConverter.colorForNumber(this.repository.measures.security_rating);
+
+    const letterReliability: string = measuresConverter.letterForNumber(this.repository.measures.reliability_rating);
+    const letterSecurity: string = measuresConverter.letterForNumber(this.repository.measures.security_rating);
+    const letterSqale: string = measuresConverter.letterForNumber(this.repository.measures.sqale_rating);
+
+
     let sonarMeasures: string = sprintf(confluenceTemplate.sonarQubeComponentTemplate,
-      "link-here",
-      "green",
+      sonarqubeLink,
+      colorCoverage,
       "Couverture",
-      this.repository.measures.coverage) + '\n';
+      this.repository.measures.coverage + '%') + '\n';
 
     sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
-      "link-here",
-      "green",
+      sonarqubeLink,
+      colorReliability,
       "Fiabilité",
-      this.repository.measures.reliability_rating) + '\n';
+      letterReliability) + '\n';
 
     sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
-      "link-here",
-      "green",
+      sonarqubeLink,
+      colorSecurity,
       "Sécurité",
-      this.repository.measures.security_rating) + '\n';
+      letterSecurity) + '\n';
 
     sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
-      "link-here",
-      "green",
+      sonarqubeLink,
+      colorSqale,
       "Maintenabilité",
-      this.repository.measures.sqale_rating) + '\n';
+      letterSqale) + '\n';
 
     sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
-      "link-here",
+      sonarqubeLink,
       "blue",
       "Lignes de code",
       this.repository.measures.ncloc) + '\n';
 
-    sonarSection = sprintf(confluenceTemplate.sonarQubeSectionTemplate,
+    let sonarSection: string = sprintf(confluenceTemplate.sonarQubeSectionTemplate,
       sonarMeasures);
 
     return sonarSection;
