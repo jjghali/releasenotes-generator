@@ -7,6 +7,7 @@ import { APIClient } from "./api.client";
 import { Generator } from "./generator";
 import { ConfluenceService } from "./service/confluence.service";
 import { Options } from "./options";
+import { Repository } from "./model/repository.model";
 const requestPromise = require("request-promise");
 
 export class Controller {
@@ -51,14 +52,14 @@ export class Controller {
         const apiClient: APIClient = new APIClient(token, this.env.graphqlUrl);
 
         apiClient
-          .getRepositoryTag(this.env.project, this.env.repository, this.env.tag)
-          .then((tag: RepositoryTag) => {
-            const generator: Generator = new Generator(tag);
+          .getReleaseInfo(this.env.project, this.env.repository, this.env.tag)
+          .then((repo: Repository) => {
+            const generator: Generator = new Generator(repo);
             let resultConfluence: string = generator.generateConfluenceFormat();
 
             console.log("Pushing to Confluence 📄");
             this.confluenceService.createPage(
-              "Release note-" + tag.name,
+              "Release note-" + repo.tag.name,
               this.env.spaceKey,
               this.env.parentPage,
               resultConfluence

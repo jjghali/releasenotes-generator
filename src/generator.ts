@@ -6,28 +6,32 @@ import { RepositoryTag } from "./model/repositoryTag.model";
 import { JiraTask } from "./model/jiraTask.model";
 import { ArtifactVersion } from "./model/artifactVersion.model";
 import { ArtifactFile } from "./model/artifactFile.model";
+import { Repository } from "./model/repository.model";
+import { Measures } from "./model/measures.model";
 
 class Generator {
-  private repositoryTag: RepositoryTag;
+  // private repositoryTag: RepositoryTag;
+  private repository: Repository;
   private mdReleaseNotes: string = "";
-  constructor(repositoryTag: RepositoryTag) {
-    this.repositoryTag = repositoryTag;
+  constructor(repository: Repository) {
+    // this.repository.tag = repositoryTag;
+    this.repository = repository
   }
 
   public generateMarkdown(): string {
     const tasksList: string = this.generateMdTaskList(
-      this.repositoryTag.jiraTasks
+      this.repository.tag.jiraTasks
     );
 
     const downloadSection: string = this.generateMdDownloadSection(
-      this.repositoryTag.artifactVersion
+      this.repository.tag.artifactVersion
     );
 
     let releaseNote: string = sprintf(
       markdownTemplate.template,
-      this.repositoryTag.projectName,
-      this.repositoryTag.repoSlug,
-      this.repositoryTag.name,
+      this.repository.tag.projectName,
+      this.repository.tag.repoSlug,
+      this.repository.tag.name,
       tasksList,
       downloadSection
     );
@@ -65,20 +69,23 @@ class Generator {
 
   public generateConfluenceFormat(): string {
     const tasksList: string = this.generateConfluenceTaskList(
-      this.repositoryTag.jiraTasks
+      this.repository.tag.jiraTasks
     );
 
+    const sonarMeasures: string = this.generateSonarQubeResultsSection();
+
     const downloadSection: string = this.generateConfluenceDownloadSection(
-      this.repositoryTag.artifactVersion
+      this.repository.tag.artifactVersion
     );
 
     const testCasesSection: string = this.generateConfluenceTestCases(
-      this.repositoryTag.jiraTasks
+      this.repository.tag.jiraTasks
     );
 
     let releaseNote: string = sprintf(
       confluenceTemplate.releaseNoteTemplate,
-      this.repositoryTag.artifactVersion.created,
+      this.repository.tag.artifactVersion.created,
+      sonarMeasures,
       tasksList,
       testCasesSection,
       downloadSection
@@ -99,6 +106,51 @@ class Generator {
     return taskList;
   }
 
+  private generateSonarQubeResultsSection(): string {
+    this.repository.measures = new Measures();
+    this.repository.measures.coverage = 95.2
+    this.repository.measures.reliability_rating = "Z"
+    this.repository.measures.security_rating = "Z"
+    this.repository.measures.sqale_rating = "Z"
+    this.repository.measures.ncloc = 9000
+
+    let sonarSection: string = ""
+    let sonarMeasures: string = sprintf(confluenceTemplate.sonarQubeComponentTemplate,
+      "link-here",
+      "green",
+      "Couverture",
+      this.repository.measures.coverage) + '\n';
+
+    sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
+      "link-here",
+      "green",
+      "Fiabilité",
+      this.repository.measures.reliability_rating) + '\n';
+
+    sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
+      "link-here",
+      "green",
+      "Sécurité",
+      this.repository.measures.security_rating) + '\n';
+
+    sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
+      "link-here",
+      "green",
+      "Maintenabilité",
+      this.repository.measures.sqale_rating) + '\n';
+
+    sonarMeasures += sprintf(confluenceTemplate.sonarQubeComponentTemplate,
+      "link-here",
+      "blue",
+      "Lignes de code",
+      this.repository.measures.ncloc) + '\n';
+
+    sonarSection = sprintf(confluenceTemplate.sonarQubeSectionTemplate,
+      sonarMeasures);
+
+    return sonarSection;
+  }
+
   private generateConfluenceDownloadSection(
     artifactVersion: ArtifactVersion
   ): string {
@@ -109,6 +161,7 @@ class Generator {
     });
     return downloadSection;
   }
+
 
   private generateConfluenceTestCases(jiraTasks: JiraTask[]): string {
     let taskList: string = "";

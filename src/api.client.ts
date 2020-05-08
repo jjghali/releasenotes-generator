@@ -1,9 +1,10 @@
 import { request, GraphQLClient } from "graphql-request";
 import { RepositoryTag } from "./model/repositoryTag.model";
+import { Repository } from "./model/repository.model";
 
 const sprintf = require("sprintf-js").sprintf;
 
-const queryTemplate: String = `
+const getReleaseInfoQuery: String = `
   {
   repository(
       project: "%1$s"
@@ -32,10 +33,16 @@ const queryTemplate: String = `
       }
     }
   }
-}
-  
+}  
 `;
-
+// ,
+// measures{
+// coverage
+// sqale_rating
+// security_rating
+// reliability_rating
+// ncloc
+// }
 class APIClient {
   private graphQLClient: GraphQLClient;
 
@@ -47,17 +54,18 @@ class APIClient {
     });
   }
 
-  async getRepositoryTag(
+  async getReleaseInfo(
     project: String,
     slug: String,
     version: String
   ): Promise<any> {
-    const query: string = sprintf(queryTemplate, project, slug, version);
+    const query: string = sprintf(getReleaseInfoQuery, project, slug, version);
     return this.graphQLClient
       .request(query)
       .then((data: any) => {
-        let tag: RepositoryTag = data.repository.tag;
-        return tag;
+        let repo: Repository = data.repository;
+        // let tag: RepositoryTag = data.repository.tag;
+        return repo;
       })
       .catch((error: any) => {
         console.error(error);
