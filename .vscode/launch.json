@@ -20,7 +20,8 @@
                 "-t 0.18.0",
                 "-s ~DWP1473",
                 "-p parcours-habitation",
-                "-r chiffrement-service"
+                "-r chiffrement-service",
+                "-P Groupe de page-test"
             ]
         }
     ]

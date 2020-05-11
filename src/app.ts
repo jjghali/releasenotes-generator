@@ -72,13 +72,14 @@ program
             repository: opts.repository,
             project: opts.project,
             spaceKey: opts.spaceKey,
+            parentPage: opts.parentPage,
             graphqlUrl: env.GRAPHQL_URL,
             confluenceUrl: env.CONFLUENCE_URL,
             confluenceUser: env.CONFLUENCE_USER,
             confluencePassword: env.CONFLUENCE_PASSWORD,
             productTokenUrl: env.PRODUCT_TOKEN_URL,
             productClientId: env.PRODUCT_CLIENT_ID,
-            productClientSecret: env.PRODUCT_CLIENT_SECRET,
+            productClientSecret: env.PRODUCT_CLIENT_SECRET
           };
         } else reject("no-config");
       } else envConfig = null;

@@ -81,7 +81,7 @@ class ConfluenceService {
 
     return requestPromise(options)
       .then((result: any) => {
-        return result.results[0];
+        return JSON.parse(result).results[0];
       })
       .catch((error: any) => {
         logger.error(error.message);
@@ -153,6 +153,19 @@ class ConfluenceService {
     return requestPromise(options).then((res: any) => {
       return res;
     });
+  }
+
+  public updateTableOfContent(repositoryName: string, releaseTag: string, parentPage: string, spaceKey: string): void {
+
+
+
+    this.getPage(parentPage, spaceKey)
+      .then((result: any) => {
+        let html = result.body.storage.value
+        console.log(html);
+      })
+
+
   }
 }
 

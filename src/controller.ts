@@ -59,12 +59,25 @@ export class Controller {
 
             console.log("Pushing to Confluence 📄");
             this.confluenceService.createPage(
-              "Release note-" + repo.tag.name,
+              repo.tag.name + "-" + this.env.repository,
               this.env.spaceKey,
               this.env.parentPage,
               resultConfluence
             );
-          });
+            return {
+              repository: this.env.repository,
+              tag: this.env.tag,
+              parentPage: this.env.parentPage,
+              spaceKey: this.env.spaceKey
+            }
+          })
+          .then((env: any) => {
+            // update table of content which is the parent page
+            this.confluenceService.updateTableOfContent(env.repository,
+              env.tag,
+              env.parentPage,
+              env.spaceKey)
+          })
       })
       .catch((error: any) => {
         console.error(error);
