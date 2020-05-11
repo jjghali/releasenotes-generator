@@ -1,0 +1,62 @@
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"> </script>
+<link rel="stylesheet" type="text/css"
+    href="https://portail-infonuagique.apps.cfzcec.desjardins.com/static/semantic.min.css" />
+<script>
+    function filtrerComposants(selected) {
+        $('.composants-table tr').show()
+        if (selected.value) {
+            $('[data-composant="' + selected.value + '"]').hide()
+        }
+
+    }    
+</script>
+<select class="composant-filtre ui dropdown" onchange="filtrerComposants(this)">
+    <option value="">Composant</option>
+    <option value="chiffrement-service">chiffrement-service</option>
+    <option value="autre-service">autre-service</option>
+</select>
+<!-- <div class="ui divider"></div> -->
+<table class="composants-table ui table">
+    <thead>
+        <tr>
+            <th class="single line">Version</th>
+            <th>Date de création</th>
+            <th>Composante</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="1.2.0-chiffrement-service" data-version="1.2.0" data-composant="chiffrement-service">
+            <td class="single line">
+                1.2.0
+            </td>
+            <td>
+                05 mai 2020
+            </td>
+            <td class="single line">
+                chiffrement-service
+            </td>
+        </tr>
+        <tr id="0.18.0-autre-service" data-version="0.18.0" data-composant="autre-service">
+            <td class="single line">
+                0.18.0
+            </td>
+            <td>
+                03 février 2020
+            </td>
+            <td class="single line">
+                autre-service
+            </td>
+        </tr>
+        <tr id="1.1.0-chiffrement-service" data-version="1.1.0" data-composant="chiffrement-service">
+            <td class="single line">
+                1.1.0
+            </td>
+            <td>
+                15 avril 2020
+            </td>
+            <td class="single line">
+                chiffrement-service
+            </td>
+        </tr>
+    </tbody>
+</table>
