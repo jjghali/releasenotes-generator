@@ -56,31 +56,34 @@ export class Controller {
           .then((repo: Repository) => {
             const generator: Generator = new Generator(repo);
             let resultConfluence: string = generator.generateConfluenceFormat();
-
-            console.log("Pushing to Confluence 📄");
-            this.confluenceService.createPage(
-              repo.tag.name + "-" + this.env.repository,
-              this.env.spaceKey,
-              this.env.parentPage,
-              resultConfluence
-            );
-            return {
-              repository: this.env.repository,
-              tag: this.env.tag,
-              parentPage: this.env.parentPage,
-              spaceKey: this.env.spaceKey
-            }
+            let parentPageContent = this.confluenceService.getPage(this.env.parentPage,
+              this.env.spaceKey)
+              .then((res: any) => {
+                console.log("Pushing to Confluence 📄");
+                this.confluenceService.createPage(
+                  repo.tag.name + "-" + this.env.repository,
+                  this.env.spaceKey,
+                  res.id,
+                  resultConfluence
+                );
+                return {
+                  repository: this.env.repository,
+                  tag: this.env.tag,
+                  parentPage: this.env.parentPage,
+                  spaceKey: this.env.spaceKey
+                }
+              })
+              .then((env: any) => {
+                // update table of content which is the parent page
+                this.confluenceService.updateSummary(env.repository,
+                  env.tag,
+                  env.parentPage,
+                  env.spaceKey)
+              })
           })
-          .then((env: any) => {
-            // update table of content which is the parent page
-            this.confluenceService.updateTableOfContent(env.repository,
-              env.tag,
-              env.parentPage,
-              env.spaceKey)
-          })
-      })
-      .catch((error: any) => {
-        console.error(error);
+          .catch((error: any) => {
+            console.error(error);
+          });
       });
   }
 }

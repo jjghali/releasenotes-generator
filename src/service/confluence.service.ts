@@ -1,5 +1,9 @@
+const cheerio = require('cheerio');
 const requestPromise = require("request-promise");
 const Logger = require("@ptkdev/logger");
+const sprintf = require("sprintf-js").sprintf;
+const confluenceTemplate = require("../templates/confluence.template");
+
 const loggerOptions = {
   "language": "en",
   "colors": true,
@@ -63,7 +67,9 @@ class ConfluenceService {
         .catch((error: any) => {
           logger.error(error.message);
         });
-    });
+    }).catch((error: any) => {
+      logger.error(error.message);
+    });;
   }
 
   public getPage(title: string, spaceKey: string): Promise<any> {
@@ -109,15 +115,12 @@ class ConfluenceService {
             body: {
               storage: {
                 value: content,
-                representation: "wiki",
+                representation: "storage",
               },
             },
-            version: {
-              number: version,
-            },
+            version: { number: 2 },
           },
-          json: true,
-          jar: "JAR",
+          json: true
         };
 
         requestPromise(options)
@@ -155,17 +158,45 @@ class ConfluenceService {
     });
   }
 
-  public updateTableOfContent(repositoryName: string, releaseTag: string, parentPage: string, spaceKey: string): void {
-
-
+  public updateSummary(repositoryName: string, releaseTag: string, parentPage: string, spaceKey: string): void {
 
     this.getPage(parentPage, spaceKey)
       .then((result: any) => {
         let html = result.body.storage.value
-        console.log(html);
+        const $ = cheerio.load(html,
+          {
+            normalizeWhitespace: true,
+            xmlMode: false
+          }
+        )
+        this.demoteLatest(repositoryName, $)
+        let line: string = this.generateLine(repositoryName, releaseTag, 'datehere')
+
+        $('.composants-table tbody').append(line);
+        let pageContent: string = $('.summary-content').html();
+        let summarypage: string = sprintf(confluenceTemplate.summaryPageTemplate, pageContent)
+        this.convertToStorageFormat(summarypage).then(async (res: any) => {
+          this.updatePage(parentPage, spaceKey, res)
+        })
       })
 
 
+  }
+
+  private generateLine(repositoryName: string, releaseTag: string, date: string): string {
+    let componentName: string = releaseTag + "-" + repositoryName;
+    let line: string = sprintf(confluenceTemplate.releaseRowTemplate,
+      componentName,
+      releaseTag,
+      repositoryName,
+      date
+    )
+
+    return line;
+  }
+
+  private demoteLatest(repositoryName: string, $: any) {
+    $('[data-composant="' + repositoryName + '"][data-latest="true"]').attr('data-latest', 'false')
   }
 }
 
