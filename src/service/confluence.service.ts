@@ -101,26 +101,22 @@ class ConfluenceService {
         let version = res.version.number + 1;
 
         let options = {
-          method: "PUT",
-          url: this.confluenceLink + "/rest/api/content/" + pageId,
-          headers: {
-            "content-type": "application/json",
-            authorization: "Basic " + this.authorization,
+          "method": "PUT",
+          "url": this.confluenceLink + "/rest/api/content/" + pageId + "?expand=body.storage,version",
+          "headers": {
+            "authorization": "Basic " + this.authorization,
           },
-          body: {
-            id: pageId,
-            type: "page",
-            title,
-            space: { key: spaceKey },
-            body: {
-              storage: {
-                value: content,
-                representation: "storage",
-              },
+          "body": {
+            "id": pageId,
+            "type": "page",
+            "title": title,
+            "space": { "key": spaceKey },
+            "body": {
+              "storage": content,
             },
-            version: { number: 2 },
+            "version": { "number": version },
           },
-          json: true
+          "json": true
         };
 
         requestPromise(options)
