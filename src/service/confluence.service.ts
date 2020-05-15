@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const requestPromise = require("request-promise");
+const requestPromise = require("request-promise-native");
 const Logger = require("@ptkdev/logger");
 const sprintf = require("sprintf-js").sprintf;
 const confluenceTemplate = require("../templates/confluence.template");
@@ -32,7 +32,7 @@ class ConfluenceService {
   }
 
   public createPage(title: string, spaceKey: string, parentPage: string, content: string) {
-    this.convertToStorageFormat(content).then(async (res: any) => {
+    this.convertToStorageFormat(content).then((res: any) => {
       let ancestors = parentPage ? [{ parentPage }] : [];
       let options: any = {
         url: this.confluenceLink + "/rest/api/content",
@@ -58,7 +58,7 @@ class ConfluenceService {
         json: true,
       };
 
-      await requestPromise(options)
+      requestPromise(options)
         .then((result: any) => {
           logger.info(
             "New page created at: " + this.confluenceLink + result._links.webui
@@ -151,41 +151,81 @@ class ConfluenceService {
     };
     return requestPromise(options).then((res: any) => {
       return res;
-    });
+    }).catch((error: any) => {
+      logger.error(error.message)
+    }
+    );
   }
 
-  public updateSummary(repositoryName: string, releaseTag: string, parentPage: string, spaceKey: string): void {
+  public updateSummary(repositoryName: string, releaseTag: string, releaseNoteLink: string, parentPage: string, spaceKey: string): Promise<any> {
 
-    this.getPage(parentPage, spaceKey)
+    return this.getPage(parentPage, spaceKey)
       .then((result: any) => {
+        let pageId = result.id;
+        let versionNumber = result.version.number;
         let html = result.body.storage.value
-        const $ = cheerio.load(html,
+
+        let $ = cheerio.load(html,
           {
-            normalizeWhitespace: true,
+            normalizeWhitespace: false,
             xmlMode: false
           }
         )
+
+        $ = cheerio.load($('.summary-content').html(),
+          {
+            normalizeWhitespace: true,
+            xmlMode: true
+          }
+        )
+
+
+
         this.demoteLatest(repositoryName, $)
-        let line: string = this.generateLine(repositoryName, releaseTag, 'datehere')
+        let line: string = this.generateLine(repositoryName, releaseTag, 'datehere', releaseNoteLink)
 
         $('.composants-table tbody').append(line);
-        let pageContent: string = $('.summary-content').html();
-        let summarypage: string = sprintf(confluenceTemplate.summaryPageTemplate, pageContent)
-        this.convertToStorageFormat(summarypage).then(async (res: any) => {
-          this.updatePage(parentPage, spaceKey, res)
-        })
+        let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
+          $.html())
+        return {
+          pageId,
+          title: parentPage,
+          versionNumber,
+          summaryContent: pageContent
+        }
+
       })
+      .then((res: any) => {
+        const pageId = res.pageId;
+        const title = res.title;
+        const versionNumber = res.versionNumber + 1;
+        this.convertToStorageFormat(res.summaryContent)
+          .then((res: any) => {
+            this.updatePage(parentPage, spaceKey, res)
+          })
+          .catch((error: any) => {
+            logger.error(error.message)
+          }
+          );
+      })
+
+
+      .catch((error: any) => {
+        logger.error(error.message)
+      }
+      );
 
 
   }
 
-  private generateLine(repositoryName: string, releaseTag: string, date: string): string {
+  private generateLine(repositoryName: string, releaseTag: string, date: string, releaseNoteLink: string): string {
     let componentName: string = releaseTag + "-" + repositoryName;
     let line: string = sprintf(confluenceTemplate.releaseRowTemplate,
       componentName,
       releaseTag,
       repositoryName,
-      date
+      date,
+      releaseNoteLink
     )
 
     return line;

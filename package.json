@@ -34,6 +34,7 @@
     "print-tools-js": "^1.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
+    "request-promise-native": "^1.0.8",
     "ts-dotenv": "^0.8.1"
   },
   "bin": {

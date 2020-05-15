@@ -107,7 +107,58 @@ const releaseRowTemplate: string = `<tr class="version-row" id="%1$s" data-lates
 const summaryPageTemplate: string = `
 h3. Informations
 {html}
+<div>
+<div class="summary-content">
 %1$s
+</div>
+</div>
+<script>
+            $(document).ready(function () {
+                $('[data-latest="false"]').hide();
+                $(".show-old").change(function () {
+                    if (this.checked) {
+                        $('[data-latest="false"]').show();
+                    } else {
+                        $('[data-latest="false"]').hide();
+                    }
+                })
+                $(".composant-filtre").change(function () {
+                    $('.version-row').hide();
+                    var showOld = $(".show-old").checked;
+
+
+
+                    if ($(this).val()) {
+                        $('[data-latest="true"][data-composant="' + $(this).val() + '"]').show();
+
+                        if ($(".show-old").val() == 'on')
+                            $('[data-latest="false"][data-composant="' + $(this).val() + '"]').show();
+                        else
+                            $('[data-latest="false"][data-composant="' + $(this).val() + '"]').hide();
+                    } else {
+                        $('.version-row').show();
+                        if ($(".show-old").val() == 'on')
+                            $('[data-latest="false"]').show();
+                        else
+                            $('[data-latest="false"]').hide();
+                    }
+
+                })
+            });
+
+
+        </script>
+        <style>
+            .hidden {
+                display: none;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+        <link rel="stylesheet" type="text/css"
+            href="https://portail-infonuagique.apps.cfzcec.desjardins.com/static/semantic.min.css">
 {html}
 `
 

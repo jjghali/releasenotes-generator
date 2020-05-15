@@ -69,6 +69,7 @@ export class Controller {
                 return {
                   repository: this.env.repository,
                   tag: this.env.tag,
+                  releaseNoteLink: res._links.webui,
                   parentPage: this.env.parentPage,
                   spaceKey: this.env.spaceKey
                 }
@@ -77,6 +78,7 @@ export class Controller {
                 // update table of content which is the parent page
                 this.confluenceService.updateSummary(env.repository,
                   env.tag,
+                  env.releaseNoteLink,
                   env.parentPage,
                   env.spaceKey)
               })
