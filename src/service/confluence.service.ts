@@ -94,12 +94,11 @@ class ConfluenceService {
       });
   }
 
-  public updatePage(title: string, spaceKey: string, content: string) {
+  public updatePage(title: string, spaceKey: string, content: any) {
     this.getPage(title, spaceKey)
       .then((res: any) => {
         let pageId = res.id;
         let version = res.version.number + 1;
-
         let options = {
           "method": "PUT",
           "url": this.confluenceLink + "/rest/api/content/" + pageId + "?expand=body.storage,version",
@@ -165,28 +164,13 @@ class ConfluenceService {
         let versionNumber = result.version.number;
         let html = result.body.storage.value
 
-        let $ = cheerio.load(html,
-          {
-            normalizeWhitespace: false,
-            xmlMode: false
-          }
-        )
-
-        $ = cheerio.load($('.summary-content').html(),
-          {
-            normalizeWhitespace: true,
-            xmlMode: true
-          }
-        )
-
-
-
+        let $ = cheerio.load(html)
         this.demoteLatest(repositoryName, $)
         let line: string = this.generateLine(repositoryName, releaseTag, 'datehere', releaseNoteLink)
 
         $('.composants-table tbody').append(line);
         let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
-          $.html())
+          $('.summary-content').html())
         return {
           pageId,
           title: parentPage,
@@ -199,14 +183,19 @@ class ConfluenceService {
         const pageId = res.pageId;
         const title = res.title;
         const versionNumber = res.versionNumber + 1;
-        this.convertToStorageFormat(res.summaryContent)
-          .then((res: any) => {
-            this.updatePage(parentPage, spaceKey, res)
-          })
-          .catch((error: any) => {
-            logger.error(error.message)
-          }
-          );
+        const parsedContent = {
+          representation: "storage",
+          value: res.summaryContent
+        }
+        this.updatePage(parentPage, spaceKey, parsedContent)
+        // this.convertToStorageFormat(res.summaryContent)
+        //   .then((res: any) => {
+
+        //   })
+        //   .catch((error: any) => {
+        //     logger.error(error.message)
+        //   }
+        //   );
       })
 
 

@@ -100,18 +100,21 @@ const releaseRowTemplate: string = `<tr class="version-row" id="%1$s" data-lates
         <a class="ui blue image label" href="%6$s">
             <i class="fab fa-bitbucket"></i>
             <div class="detail">%1$s</div>
-        </a>        
+     </a>        
     </td>
 </tr>`
 
 const summaryPageTemplate: string = `
-h3. Informations
-{html}
-<div>
+<h3>Informations</h3>
+<ac:structured-macro ac:name="html" ac:schema-version="1" ac:macro-id="7a5afa2b-70d7-4e65-81b3-b9b0a0573266">
+  <ac:plain-text-body>
+    <![CDATA[
+        <div>
 <div class="summary-content">
 %1$s
 </div>
 </div>
+
 <script>
             $(document).ready(function () {
                 $('[data-latest="false"]').hide();
@@ -152,14 +155,14 @@ h3. Informations
             .hidden {
                 display: none;
             }
-        </style>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+        </style>        
         <link rel="stylesheet" type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
         <link rel="stylesheet" type="text/css"
             href="https://portail-infonuagique.apps.cfzcec.desjardins.com/static/semantic.min.css">
-{html}
+]]>
+  </ac:plain-text-body>
+</ac:structured-macro>"
 `
 
 module.exports = {
