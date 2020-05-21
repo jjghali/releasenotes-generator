@@ -69,7 +69,7 @@ class ConfluenceService {
         });
     }).catch((error: any) => {
       logger.error(error.message);
-    });;
+    });
   }
 
   public getPage(title: string, spaceKey: string): Promise<any> {
@@ -156,7 +156,7 @@ class ConfluenceService {
     );
   }
 
-  public updateSummary(repositoryName: string, releaseTag: string, releaseNoteLink: string, parentPage: string, spaceKey: string): Promise<any> {
+  public updateSummary(repositoryName: string, releaseTag: string, releaseNoteLink: string, parentPage: string, spaceKey: string, tagLink: string, releaseDate: string): Promise<any> {
 
     return this.getPage(parentPage, spaceKey)
       .then((result: any) => {
@@ -166,7 +166,9 @@ class ConfluenceService {
 
         let $ = cheerio.load(html)
         this.demoteLatest(repositoryName, $)
-        let line: string = this.generateLine(repositoryName, releaseTag, 'datehere', releaseNoteLink)
+        const isoDate = new Date(releaseDate)
+        const formatDate = isoDate.getFullYear() + '-' + (isoDate.getMonth() + 1) + '-' + isoDate.getDate();
+        let line: string = this.generateLine(repositoryName, releaseTag, formatDate, releaseNoteLink, tagLink)
 
         $('.composants-table tbody').append(line);
         let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
@@ -188,14 +190,6 @@ class ConfluenceService {
           value: res.summaryContent
         }
         this.updatePage(parentPage, spaceKey, parsedContent)
-        // this.convertToStorageFormat(res.summaryContent)
-        //   .then((res: any) => {
-
-        //   })
-        //   .catch((error: any) => {
-        //     logger.error(error.message)
-        //   }
-        //   );
       })
 
 
@@ -207,21 +201,23 @@ class ConfluenceService {
 
   }
 
-  private generateLine(repositoryName: string, releaseTag: string, date: string, releaseNoteLink: string): string {
+  private generateLine(repositoryName: string, releaseTag: string, date: string, releaseNoteLink: string, tagLink: string): string {
     let componentName: string = releaseTag + "-" + repositoryName;
     let line: string = sprintf(confluenceTemplate.releaseRowTemplate,
       componentName,
       releaseTag,
       repositoryName,
       date,
-      releaseNoteLink
+      releaseNoteLink,
+      tagLink
     )
 
     return line;
   }
 
   private demoteLatest(repositoryName: string, $: any) {
-    $('[data-composant="' + repositoryName + '"][data-latest="true"]').attr('data-latest', 'false')
+    $('tr[data-composant="' + repositoryName + '"][data-latest="true"]').remove('.ui.tag.label')
+    $('tr[data-composant="' + repositoryName + '"][data-latest="true"]').attr('data-latest', 'false')
   }
 }
 

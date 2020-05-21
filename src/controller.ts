@@ -65,13 +65,17 @@ export class Controller {
                   this.env.spaceKey,
                   res.id,
                   resultConfluence
-                );
+                )
+                let pageLink = this.env.confluenceUrl + '/display/' + this.env.spaceKey + '/' + repo.tag.name + "-" + this.env.repository;
+                let tagLink = 'https://git.cfzcea.dev.desjardins.com/projects/' + this.env.project + '/repos/' + this.env.repository + '/browse?at=refs%2Ftags%2F' + repo.tag.name
                 return {
                   repository: this.env.repository,
                   tag: this.env.tag,
-                  releaseNoteLink: res._links.webui,
+                  releaseNoteLink: pageLink,
                   parentPage: this.env.parentPage,
-                  spaceKey: this.env.spaceKey
+                  spaceKey: this.env.spaceKey,
+                  tagLink,
+                  releaseDate: repo.tag.artifactVersion.created
                 }
               })
               .then((env: any) => {
@@ -80,7 +84,9 @@ export class Controller {
                   env.tag,
                   env.releaseNoteLink,
                   env.parentPage,
-                  env.spaceKey)
+                  env.spaceKey,
+                  env.tagLink,
+                  env.releaseDate)
               })
           })
           .catch((error: any) => {

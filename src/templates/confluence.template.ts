@@ -162,7 +162,7 @@ const summaryPageTemplate: string = `
             href="https://portail-infonuagique.apps.cfzcec.desjardins.com/static/semantic.min.css">
 ]]>
   </ac:plain-text-body>
-</ac:structured-macro>"
+</ac:structured-macro>
 `
 
 module.exports = {
