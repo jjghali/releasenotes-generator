@@ -116,15 +116,24 @@ const summaryPageTemplate: string = `
 </div>
 
 <script>
-            $(document).ready(function () {
+
+$(document).ready(function () {
+    $('.composants-table tbody tr').each(function () {
+        var repoName = $(this).attr('data-composant');
+        var hasRepo = $('.composant-filtre option[value="' + repoName + '"]').length > 0;
+        if (!hasRepo) {
+            $('.composant-filtre').append('<option value="' + repoName + '">' + repoName + '</option>')
+        }
+    
+    })
+    $('[data-latest="false"]').hide();
+        $(".show-old").change(function () {
+            if (this.checked) {
+                $('[data-latest="false"]').show();
+            } else {
                 $('[data-latest="false"]').hide();
-                $(".show-old").change(function () {
-                    if (this.checked) {
-                        $('[data-latest="false"]').show();
-                    } else {
-                        $('[data-latest="false"]').hide();
-                    }
-                })
+            }
+        })
                 $(".composant-filtre").change(function () {
                     $('.version-row').hide();
                     var showOld = $(".show-old").checked;

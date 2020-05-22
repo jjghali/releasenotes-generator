@@ -169,7 +169,6 @@ class ConfluenceService {
         const isoDate = new Date(releaseDate)
         const formatDate = isoDate.getFullYear() + '-' + (isoDate.getMonth() + 1) + '-' + isoDate.getDate();
         let line: string = this.generateLine(repositoryName, releaseTag, formatDate, releaseNoteLink, tagLink)
-
         $('.composants-table tbody').prepend(line);
         let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
           $('.summary-content').html())
