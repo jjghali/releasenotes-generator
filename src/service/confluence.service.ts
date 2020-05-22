@@ -170,7 +170,7 @@ class ConfluenceService {
         const formatDate = isoDate.getFullYear() + '-' + (isoDate.getMonth() + 1) + '-' + isoDate.getDate();
         let line: string = this.generateLine(repositoryName, releaseTag, formatDate, releaseNoteLink, tagLink)
 
-        $('.composants-table tbody').append(line);
+        $('.composants-table tbody').prepend(line);
         let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
           $('.summary-content').html())
         return {
@@ -216,8 +216,8 @@ class ConfluenceService {
   }
 
   private demoteLatest(repositoryName: string, $: any) {
-    $('tr[data-composant="' + repositoryName + '"][data-latest="true"]').remove('.ui.tag.label')
     $('tr[data-composant="' + repositoryName + '"][data-latest="true"]').attr('data-latest', 'false')
+    $('tr[data-composant="' + repositoryName + '"][data-latest="false"] div').remove('.ui.tag.label')
   }
 }
 
