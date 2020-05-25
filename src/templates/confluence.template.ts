@@ -173,6 +173,31 @@ $(document).ready(function () {
   </ac:plain-text-body>
 </ac:structured-macro>
 `
+const bitbucketInfoLink = `
+<a class="ui blue image label bitbucket-link" href="https://git.cfzcea.dev.desjardins.com/projects/%1$s/repos/%2$s/browse">
+    <i class="fab fa-bitbucket"></i>Bitbucket
+    <div class="detail">%2$s</div>
+</a>
+                        `
+const concourseInfoLink = `
+<a class="ui yellow image label concourse-link" href="https://ci.cfzcea.dev.desjardins.com/teams/%1$s/pipelines/%2$s">
+    <i class="fas fa-cog"></i>Concourse
+    <div class="detail">%2$s</div>
+</a>
+                        `
+const sonarQubeInfoLink = `
+<a class="ui grey image label sonar-link" href="https://sonar.cfzcea.dev.desjardins.com/dashboard?id=%1$s">
+    <i class="fas fa-bug"></i>SonarQube
+    <div class="detail">%2$s</div>
+</a>
+`
+const resourcesLinksInfo = `
+<tr data-composant="%1$s">
+    <td data-label="nom">%1$s</td>
+    <td class="resource-link" data-label="liens">
+        %2$s
+    </td>
+</tr>`
 
 module.exports = {
     releaseNoteTemplate,
@@ -180,5 +205,9 @@ module.exports = {
     sonarQubeComponentTemplate,
     sonarQubeSectionTemplate,
     releaseRowTemplate,
-    summaryPageTemplate
+    summaryPageTemplate,
+    bitbucketInfoLink,
+    concourseInfoLink,
+    sonarQubeInfoLink,
+    resourcesLinksInfo
 };

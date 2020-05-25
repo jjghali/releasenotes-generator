@@ -156,7 +156,7 @@ class ConfluenceService {
     );
   }
 
-  public updateSummary(repositoryName: string, releaseTag: string, releaseNoteLink: string, parentPage: string, spaceKey: string, tagLink: string, releaseDate: string): Promise<any> {
+  public updateSummary(repositoryName: string, releaseTag: string, releaseNoteLink: string, parentPage: string, spaceKey: string, tagLink: string, releaseDate: string, sonarQubeKey: string, projectName: string): Promise<any> {
 
     return this.getPage(parentPage, spaceKey)
       .then((result: any) => {
@@ -166,8 +166,14 @@ class ConfluenceService {
 
         let $ = cheerio.load(html)
         this.demoteLatest(repositoryName, $)
+        this.updateInformationSection(repositoryName, projectName, sonarQubeKey, $)
         const isoDate = new Date(releaseDate)
-        const formatDate = isoDate.getFullYear() + '-' + (isoDate.getMonth() + 1) + '-' + isoDate.getDate();
+        // const formatDate = isoDate.getFullYear() + '-' + (isoDate.getMonth() + 1) + '-' + isoDate.getDate();
+        const formatDate = isoDate.toLocaleString("en-CA", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric"
+        })
         let line: string = this.generateLine(repositoryName, releaseTag, formatDate, releaseNoteLink, tagLink)
         $('.composants-table tbody').prepend(line);
         let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
@@ -217,6 +223,36 @@ class ConfluenceService {
   private demoteLatest(repositoryName: string, $: any) {
     $('tr[data-composant="' + repositoryName + '"][data-latest="true"]').attr('data-latest', 'false')
     $('tr[data-composant="' + repositoryName + '"][data-latest="false"] div').remove('.ui.tag.label')
+  }
+
+  private updateInformationSection(repositoryName: string, projectName: string, sonarQubeKey: string, $: any) {
+    let hasRepo = $('.resource-links tr [data-composant="' + projectName + '"]').length > 0;
+    if (!hasRepo) {
+      let bitbucketLink = sprintf(
+        confluenceTemplate.bitbucketInfoLink,
+        projectName,
+        repositoryName
+      );
+
+      let concourseLink = sprintf(
+        confluenceTemplate.concourseInfoLink,
+        projectName,
+        repositoryName
+      )
+
+      let sonarQubeLink = sprintf(
+        confluenceTemplate.sonarQubeInfoLink,
+        sonarQubeKey,
+        repositoryName
+      )
+      let content = bitbucketLink + concourseLink + sonarQubeLink;
+
+      let resourcesLinks = sprintf(confluenceTemplate.resourcesLinksInfo,
+        repositoryName,
+        content
+      )
+      $('.resource-links').append(resourcesLinks);
+    }
   }
 }
 

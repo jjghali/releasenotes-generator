@@ -75,7 +75,9 @@ export class Controller {
                   parentPage: this.env.parentPage,
                   spaceKey: this.env.spaceKey,
                   tagLink,
-                  releaseDate: repo.tag.artifactVersion.created
+                  releaseDate: repo.tag.artifactVersion.created,
+                  sonarQubeKey: repo.key,
+                  projectName: repo.tag.projectName,
                 }
               })
               .then((env: any) => {
@@ -86,7 +88,9 @@ export class Controller {
                   env.parentPage,
                   env.spaceKey,
                   env.tagLink,
-                  env.releaseDate)
+                  env.releaseDate,
+                  env.sonarQubeKey,
+                  env.projectName)
               })
           })
           .catch((error: any) => {
