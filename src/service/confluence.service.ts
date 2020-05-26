@@ -165,19 +165,25 @@ class ConfluenceService {
         let pageId = result.id;
         let versionNumber = result.version.number;
         let html = result.body.storage.value
-
         let $ = cheerio.load(html)
-        this.demoteLatest(repositoryName, $)
+        let hasRelease = $('.version-row[id="' + releaseTag + '-' + repositoryName + '"]').length > 0;
+
+        if (!hasRelease)
+          this.demoteLatest(repositoryName, $)
+
         this.updateInformationSection(repositoryName, projectName, sonarQubeKey, $)
+
         const isoDate = new Date(releaseDate)
-        // const formatDate = isoDate.getFullYear() + '-' + (isoDate.getMonth() + 1) + '-' + isoDate.getDate();
         const formatDate = isoDate.toLocaleString("en-CA", {
           year: "numeric",
           month: "numeric",
           day: "numeric"
         })
-        let line: string = this.generateLine(repositoryName, releaseTag, formatDate, releaseNoteLink, tagLink)
-        $('.composants-table tbody').prepend(line);
+
+        if (!hasRelease) {
+          let line: string = this.generateLine(repositoryName, releaseTag, formatDate, releaseNoteLink, tagLink)
+          $('.composants-table tbody').prepend(line);
+        }
         let pageContent: string = sprintf(confluenceTemplate.summaryPageTemplate,
           $('.summary-content').html())
         return {
@@ -228,7 +234,7 @@ class ConfluenceService {
   }
 
   private updateInformationSection(repositoryName: string, projectName: string, sonarQubeKey: string, $: any) {
-    let hasRepo = $('.resource-links tr [data-composant="' + projectName + '"]').length > 0;
+    let hasRepo = $('.resource-links tr[data-composant="' + repositoryName + '"]').length > 0;
     if (!hasRepo) {
       let bitbucketLink = sprintf(
         confluenceTemplate.bitbucketInfoLink,
