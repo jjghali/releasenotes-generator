@@ -33,7 +33,9 @@ class ConfluenceService {
 
   public createPage(title: string, spaceKey: string, parentPage: string, content: string) {
     this.convertToStorageFormat(content).then((res: any) => {
-      let ancestors = parentPage ? [{ parentPage }] : [];
+      let ancestors = parentPage ? [
+        { type: "page", id: parentPage }
+      ] : [];
       let options: any = {
         url: this.confluenceLink + "/rest/api/content",
         method: "POST",
