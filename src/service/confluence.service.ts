@@ -84,7 +84,7 @@ class ConfluenceService {
         expand: "body.storage.value,version",
       },
       headers: { authorization: "Basic " + this.authorization },
-      jar: "JAR",
+      jar: "JAR"
     };
 
     return requestPromise(options)
@@ -202,6 +202,7 @@ class ConfluenceService {
           representation: "storage",
           value: res.summaryContent
         }
+
         this.updatePage(parentPage, spaceKey, parsedContent)
       })
 
@@ -261,6 +262,45 @@ class ConfluenceService {
       )
       $('.resource-links').append(resourcesLinks);
     }
+  }
+
+  public initializeSummaryPage(title: string, spaceKey: string): Promise<any> {
+    let content: string = sprintf(confluenceTemplate.summaryPageTemplate,
+      confluenceTemplate.summaryContentTemplate);
+
+    let options: any = {
+      url: this.confluenceLink + "/rest/api/content",
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: "Basic " + this.authorization,
+      },
+      body: {
+        type: "page",
+        title: title,
+        space: {
+          key: spaceKey,
+        },
+        body: {
+          storage: {
+            value: content,
+            representation: "storage",
+          },
+        },
+      },
+      json: true,
+    };
+
+    return requestPromise(options)
+      .then((result: any) => {
+        logger.info(
+          "Summary page did not exist. A new one  has been initialized at " + result._links.webui
+        );
+        return result;
+      })
+      .catch((error: any) => {
+        logger.error(error.message);
+      });
   }
 }
 

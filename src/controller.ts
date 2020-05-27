@@ -56,45 +56,60 @@ export class Controller {
           .then((repo: Repository) => {
             const generator: Generator = new Generator(repo);
             let resultConfluence: string = generator.generateConfluenceFormat();
-            let parentPageContent = this.confluenceService.getPage(this.env.parentPage,
-              this.env.spaceKey)
-              .then((res: any) => {
-                console.log("Pushing to Confluence 📄");
-                this.confluenceService.createPage(
-                  repo.tag.name + "-" + this.env.repository,
-                  this.env.spaceKey,
-                  res.id,
-                  resultConfluence
-                )
-                let pageLink = this.env.confluenceUrl + '/display/' + this.env.spaceKey + '/' + repo.tag.name + "-" + this.env.repository;
-                let tagLink = 'https://git.cfzcea.dev.desjardins.com/projects/' + this.env.project + '/repos/' + this.env.repository + '/browse?at=refs%2Ftags%2F' + repo.tag.name
-                return {
-                  repository: this.env.repository,
-                  tag: this.env.tag,
-                  releaseNoteLink: pageLink,
-                  parentPage: this.env.parentPage,
-                  spaceKey: this.env.spaceKey,
-                  tagLink,
-                  releaseDate: repo.tag.artifactVersion.created,
-                  sonarQubeKey: repo.key,
-                  projectName: repo.tag.projectName,
+
+            this.confluenceService.getPage(this.env.parentPage,
+              this.env.spaceKey).then((res: any) => {
+                // check if page exists
+                if (!res) {
+                  return this.confluenceService.initializeSummaryPage(this.env.parentPage,
+                    this.env.spaceKey);
                 }
+              }).then(() => {
+
+                this.confluenceService.getPage(this.env.parentPage,
+                  this.env.spaceKey)
+
+                  .then((res: any) => {
+                    console.log("Pushing to Confluence 📄");
+                    this.confluenceService.createPage(
+                      repo.tag.name + "-" + this.env.repository,
+                      this.env.spaceKey,
+                      res.id,
+                      resultConfluence
+                    )
+                    let pageLink = this.env.confluenceUrl + '/display/' + this.env.spaceKey + '/' + repo.tag.name + "-" + this.env.repository;
+                    let tagLink = 'https://git.cfzcea.dev.desjardins.com/projects/' + this.env.project + '/repos/' + this.env.repository + '/browse?at=refs%2Ftags%2F' + repo.tag.name
+                    return {
+                      repository: this.env.repository,
+                      tag: this.env.tag,
+                      releaseNoteLink: pageLink,
+                      parentPage: this.env.parentPage,
+                      spaceKey: this.env.spaceKey,
+                      tagLink,
+                      releaseDate: repo.tag.artifactVersion.created,
+                      sonarQubeKey: repo.key,
+                      projectName: repo.tag.projectName,
+                    }
+                  })
+                  .then((env: any) => {
+                    // update table of content which is the parent page
+                    this.confluenceService.updateSummary(env.repository,
+                      env.tag,
+                      env.releaseNoteLink,
+                      env.parentPage,
+                      env.spaceKey,
+                      env.tagLink,
+                      env.releaseDate,
+                      env.sonarQubeKey,
+                      env.projectName)
+                  })
+                  .catch((error: any) => {
+                    console.error(error);
+                  });
               })
-              .then((env: any) => {
-                // update table of content which is the parent page
-                this.confluenceService.updateSummary(env.repository,
-                  env.tag,
-                  env.releaseNoteLink,
-                  env.parentPage,
-                  env.spaceKey,
-                  env.tagLink,
-                  env.releaseDate,
-                  env.sonarQubeKey,
-                  env.projectName)
-              })
-          })
-          .catch((error: any) => {
-            console.error(error);
+              .catch((error: any) => {
+                console.error(error);
+              });
           });
       });
   }

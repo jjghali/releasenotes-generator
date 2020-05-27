@@ -173,6 +173,44 @@ $(document).ready(function () {
   </ac:plain-text-body>
 </ac:structured-macro>
 `
+
+const summaryContentTemplate = `
+    <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Liens</th>
+                </tr>
+            </thead>
+            <tbody class="resource-links">              
+            </tbody>
+        </table>
+
+        <div class="ui divider"></div>
+        <h1 class="ui header">Notes de livraison</h1>
+        <select class="composant-filtre ui dropdown">
+            <option value>Composant</option>
+        </select>
+        <div class="ui checkbox">
+            <input class="show-old" type="checkbox" name="hide-old">
+            <label>Show old releases</label>
+        </div>
+        <br>
+        <table class="composants-table ui table">
+            <thead>
+                <tr>
+                    <th class="single line">Version</th>
+                    <th>Date de cr&#xE9;ation</th>
+                    <th>Composante</th>
+                    <th>Liens</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+`
+
 const bitbucketInfoLink = `
 <a class="ui blue image label bitbucket-link" href="https://git.cfzcea.dev.desjardins.com/projects/%1$s/repos/%2$s/browse">
     <i class="fab fa-bitbucket"></i>Bitbucket
@@ -206,6 +244,7 @@ module.exports = {
     sonarQubeSectionTemplate,
     releaseRowTemplate,
     summaryPageTemplate,
+    summaryContentTemplate,
     bitbucketInfoLink,
     concourseInfoLink,
     sonarQubeInfoLink,
