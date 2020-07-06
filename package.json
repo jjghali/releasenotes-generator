@@ -1,0 +1,47 @@
+{
+  "name": "releasenotes-generator",
+  "version": "1.0.0",
+  "author": "Joshua Ghali <jjghali@protonmail.ch>",
+  "license": "None",
+  "main": "dist/app.js",
+  "types": "dist/app.d.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/app.js",
+    "prestart": "npm run build",
+    "install-cli": "npm run build && cp package.json dist && npm install -g ./dist",
+    "uninstall-cli": "npm uninstall -g releasenotes-gen",
+    "test": "npx -- mocha --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit",
+    "test:junit": "npx -- mocha --reporter mocha-junit-reporter --require ts-node/register 'test/**/*.test.ts' --reporter-options mochaFile=./coverage/test-results.xml --exit",
+    "test:debug": "npx -- mocha --inspect-brk --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "devDependencies": {
+    "@types/request-promise": "^4.1.46",
+    "ts-node": "^8.8.1",
+    "tsc": "^1.20150623.0",
+    "tslint": "^6.1.0",
+    "tslint-config-airbnb": "^5.11.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@kenchan0130/markdown-to-atlassian-wiki-markup": "^3.0.2",
+    "@ptkdev/logger": "^1.1.2",
+    "chalk": "^4.0.0",
+    "cheerio": "^1.0.0-rc.3",
+    "commander": "^5.1.0",
+    "dotenv": "^8.2.0",
+    "graphql-request": "^1.8.2",
+    "print-tools-js": "^1.2.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "request-promise-native": "^1.0.8",
+    "ts-dotenv": "^0.8.1",
+    "snyk": "^1.338.0"
+  },
+  "bin": {
+    "releasenotes-gen": "dist/app.js"
+  },
+  "snyk": true
+}

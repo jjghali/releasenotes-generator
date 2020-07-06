@@ -1,0 +1,9 @@
+{
+  "defaultSeverity": "error",
+  "jsRules": {},
+  "rules": {
+    "eofline": false,
+    "quotemark": [false, "single"]
+  },
+  "rulesDirectory": []
+}

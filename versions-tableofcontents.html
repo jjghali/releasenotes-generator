@@ -1,0 +1,314 @@
+<div>
+    <div class="summary-content">
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Liens</th>
+                </tr>
+            </thead>
+            <tbody class="resource-links">
+                <tr data-composant="service">
+                    <td data-label="nom">service</td>
+                    <td class="resource-link" data-label="liens">
+                        <a class="ui blue image label bitbucket-link">
+                            <i class="fab fa-bitbucket"></i>
+                            Bitbucket
+                            <div class="detail">service</div>
+                        </a>
+                        <a class="ui yellow image label concourse-link">
+                            <i class="fas fa-cog"></i>
+                            Concourse
+                            <div class="detail">service</div>
+                        </a>
+                        <a class="ui grey image label sonar-link">
+                            <i class="fas fa-bug"></i>
+                            SonarQube
+                            <div class="detail">service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="nom">autre-service</td>
+                    <td data-label="liens">
+                        <a class="ui blue image label">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">autre-service</div>
+                        </a>
+                        <a class="ui yellow image label">
+                            <i class="fas fa-cog"></i>
+                            <div class="detail">autre-service</div>
+                        </a>
+                        <a class="ui grey image label">
+                            <i class="fas fa-bug"></i>
+                            <div class="detail">autre-service</div>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="ui divider"></div>
+        <h1 class="ui header">Notes de livraison</h1>
+        <select class="composant-filtre ui dropdown">
+            <option value>Composant</option>
+        </select>
+        <div class="ui checkbox">
+            <input class="show-old" type="checkbox" name="hide-old">
+            <label>Show old releases</label>
+        </div>
+        <br>
+        <table class="composants-table ui table">
+            <thead>
+                <tr>
+                    <th class="single line">Version</th>
+                    <th>Date de cr&#xE9;ation</th>
+                    <th>Composante</th>
+                    <th>Liens</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="version-row" id="1.1.0-service" data-latest="true" data-version="1.1.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/1.1.0-service">
+                                1.1.0
+                            </a>
+                            <div class="ui green tag label tiny">Latest</div>
+                        </div>
+                    </td>
+                    <td>
+                        2020-2-18
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F1.1.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">1.1.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="version-row" id="0.18.0-service" data-latest="true" data-version="0.18.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/0.18.0-service">
+                                0.18.0
+                            </a>
+                            <div class="ui green tag label tiny">Latest</div>
+                        </div>
+                    </td>
+                    <td>
+                        2019-12-10
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F0.18.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">0.18.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="version-row" id="0.18.0-service" data-latest="false" data-version="0.18.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/0.18.0-service">
+                                0.18.0
+                            </a>
+
+                        </div>
+                    </td>
+                    <td>
+                        datehere
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F0.18.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">0.18.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="version-row" id="0.18.0-service" data-latest="false" data-version="0.18.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/0.18.0-service">
+                                0.18.0
+                            </a>
+
+                        </div>
+                    </td>
+                    <td>
+                        2019-12-10
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F0.18.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">0.18.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="version-row" id="0.18.0-service" data-latest="false" data-version="0.18.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/0.18.0-service">
+                                0.18.0
+                            </a>
+
+                        </div>
+                    </td>
+                    <td>
+                        2019-12-10
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F0.18.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">0.18.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="version-row" id="0.18.0-service" data-latest="false" data-version="0.18.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/0.18.0-service">
+                                0.18.0
+                            </a>
+
+                        </div>
+                    </td>
+                    <td>
+                        2019-12-10
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F0.18.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">0.18.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="version-row" id="0.18.0-service" data-latest="false" data-version="0.18.0"
+                    data-composant="service">
+                    <td class="single line">
+                        <div class>
+                            <a href="https://confluence.example.com
+/display/space-key/0.18.0-service">
+                                0.18.0
+                            </a>
+
+                        </div>
+                    </td>
+                    <td>
+                        2019-12-10
+                    </td>
+                    <td class="single line">
+                        service
+                    </td>
+                    <td>
+                        <a class="ui blue image label" href="https://git.example.com
+/projects/project/repos/service/browse?at=refs%2Ftags%2F0.18.0">
+                            <i class="fab fa-bitbucket"></i>
+                            <div class="detail">0.18.0-service</div>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+    </div>
+</div>
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="https://portail-infonuagique.example.com
+/static/semantic.min.css">
+<script>
+    $(document).ready(function () {
+        //updates filter
+        $('.composants-table tbody tr').each(function () {
+            var repoName = $(this).attr('data-composant');
+            var hasRepo = $('.composant-filtre option[value="' + repoName + '"]').length > 0;
+            if (!hasRepo) {
+                $('.composant-filtre').append('<option value="' + repoName + '">' + repoName + '</option>')
+            }
+
+        })
+
+
+
+        $('[data-latest="false"]').hide();
+        $(".show-old").change(function () {
+            if (this.checked) {
+                $('[data-latest="false"]').show();
+            } else {
+                $('[data-latest="false"]').hide();
+            }
+        })
+        $(".composant-filtre").change(function () {
+            $('.version-row').hide();
+            var showOld = $(".show-old").checked;
+
+
+
+            if ($(this).val()) {
+                $('[data-latest="true"][data-composant="' + $(this).val() + '"]').show();
+
+                if ($(".show-old").val() == 'on')
+                    $('[data-latest="false"][data-composant="' + $(this).val() + '"]').show();
+                else
+                    $('[data-latest="false"][data-composant="' + $(this).val() + '"]').hide();
+            } else {
+                $('.version-row').show();
+                if ($(".show-old").val() == 'on')
+                    $('[data-latest="false"]').show();
+                else
+                    $('[data-latest="false"]').hide();
+            }
+
+        })
+    });
+
+
+</script>
+
+<head></head>
