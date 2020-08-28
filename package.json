@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@kenchan0130/markdown-to-atlassian-wiki-markup": "^3.0.2",
-    "@ptkdev/logger": "^1.6.0",
+    "@ptkdev/logger": "^1.7.2",
     "chalk": "^4.0.0",
     "cheerio": "^1.0.0-rc.3",
     "commander": "^5.1.0",
