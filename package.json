@@ -13,9 +13,7 @@
     "uninstall-cli": "npm uninstall -g releasenotes-gen",
     "test": "npx -- mocha --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit",
     "test:junit": "npx -- mocha --reporter mocha-junit-reporter --require ts-node/register 'test/**/*.test.ts' --reporter-options mochaFile=./coverage/test-results.xml --exit",
-    "test:debug": "npx -- mocha --inspect-brk --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "test:debug": "npx -- mocha --inspect-brk --reporter spec --require ts-node/register 'test/**/*.test.ts' --exit"
   },
   "devDependencies": {
     "@types/request-promise": "^4.1.46",
@@ -26,7 +24,6 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@kenchan0130/markdown-to-atlassian-wiki-markup": "^3.0.2",
     "@ptkdev/logger": "^1.7.2",
     "chalk": "^4.0.0",
     "cheerio": "^1.0.0-rc.3",
@@ -37,11 +34,9 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "request-promise-native": "^1.0.8",
-    "ts-dotenv": "^0.8.1",
-    "snyk": "^1.341.1"
+    "ts-dotenv": "^0.8.1"
   },
   "bin": {
     "releasenotes-gen": "dist/app.js"
-  },
-  "snyk": true
+  }
 }
