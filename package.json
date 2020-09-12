@@ -29,7 +29,7 @@
     "cheerio": "^1.0.0-rc.3",
     "commander": "^5.1.0",
     "dotenv": "^8.2.0",
-    "graphql-request": "^1.8.2",
+    "graphql-request": "^2.0.0",
     "print-tools-js": "^1.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
