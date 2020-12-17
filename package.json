@@ -34,7 +34,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "request-promise-native": "^1.0.8",
-    "ts-dotenv": "^0.8.1"
+    "ts-dotenv": "^0.8.3"
   },
   "bin": {
     "releasenotes-gen": "dist/app.js"
